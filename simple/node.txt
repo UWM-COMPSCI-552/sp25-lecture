@@ -1,0 +1,123 @@
+Welcome to Node.js v16.17.0.
+Type ".help" for more information.
+> const l = {x:10, y:34};
+undefined
+> l
+{ x: 10, y: 34 }
+> l.x
+10
+> l[34]
+undefined
+> l["x"]
+10
+> l["z"]
+undefined
+> l["z"] = -8
+-8
+> l
+{ x: 10, y: 34, z: -8 }
+> l.x := "hi";
+l.x := "hi";
+    ^
+
+Uncaught SyntaxError: Unexpected token ':'
+> l.x = "hi";
+'hi'
+> l
+{ x: 'hi', y: 34, z: -8 }
+> l["quiz"] = 42;
+42
+> l
+{ x: 'hi', y: 34, z: -8, quiz: 42 }
+> l["john"] = "boyland";
+'boyland'
+> l
+{ x: 'hi', y: 34, z: -8, quiz: 42, john: 'boyland' }
+> const a = ["eeny", "meeny", "miny", "moe" ];
+undefined
+> a
+[ 'eeny', 'meeny', 'miny', 'moe' ]
+> a[2]
+'miny'
+> a[1] = "meany";
+'meany'
+> a
+[ 'eeny', 'meany', 'miny', 'moe' ]
+> a.length
+4
+> a[4] = "catch"
+'catch'
+> a.length
+5
+> a[6] = "tiger";
+'tiger'
+> a
+[ 'eeny', 'meany', 'miny', 'moe', 'catch', <1 empty item>, 'tiger' ]
+> a[99] = "Done";
+'Done'
+> a.length
+100
+> a[56]
+undefined
+> a.push("well...")
+101
+> a.length
+101
+> a.pop()
+'well...'
+> a.length
+100
+> for (let i=0; i < a.length; ++i) { if (a[i] !== undefined) ++count; }
+Uncaught ReferenceError: count is not defined
+> let count = 0;
+undefined
+> for (let i=0; i < a.length; ++i) { if (a[i] !== undefined) ++count; }
+7
+> count
+7
+> count = 0;
+0
+> for (let v of a) { ++count; }
+100
+> for (let v of a) { if (v !== undefined) ++count; }
+107
+> for (let v in a) { ++count; }
+114
+> a.x = 45;
+45
+> a.length
+100
+> a
+[
+  'eeny',
+  'meany',
+  'miny',
+  'moe',
+  'catch',
+  <1 empty item>,
+  'tiger',
+  <92 empty items>,
+  'Done',
+  x: 45
+]
+> for (let v in a) { ++count; }
+122
+> count = 0;
+0
+> for (let v in a) { ++count; }
+8
+> count = 0;
+0
+> for (let v of a) { ++count; }
+100
+> a[-23] = "foo";
+'foo'
+> a.length
+100
+> for (let v of a) { ++count; }
+200
+> a["0"]
+'eeny'
+> a["-23"]
+'foo'
+> a["x"]
