@@ -29,5 +29,13 @@ describe('euclidean vector tests', () => {
     });
     test('weird', () => {
         const v = new EuclideanVector2D(1,1);
+        const w = new EuclideanVector2D(2,3);
+        const x = v.add(w);
+        expect(x.dy).toBe(4);
+    });
+    test('scale simple', () => {
+        const v = new EuclideanVector2D(3,4);
+        const w = v.scale(2);
+        expect(w.dx).toBe(6);
     })
 });
