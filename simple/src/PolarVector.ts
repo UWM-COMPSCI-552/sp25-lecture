@@ -1,7 +1,8 @@
 import { EuclideanVector2D } from './EuclideanVector';
 import { Point } from './Point';
-import { Vector2D } from './Vector';
-export class PolarVector implements Vector2D {
+import { Vector2D, AbstractVector } from './Vector';
+
+export class PolarVector extends AbstractVector {
     get dx() {
         return Math.cos(this.angle) * this.magnitude;
     }
@@ -14,6 +15,7 @@ export class PolarVector implements Vector2D {
     readonly angle: number;
 
     constructor (magnitude : number, angle : number) {
+        super();
         this.magnitude = magnitude;
         this.angle = angle;
     }
@@ -30,15 +32,4 @@ export class PolarVector implements Vector2D {
         return new PolarVector(this.magnitude * amt, this.angle);
     }
 
-    move(p : Point) : Point {
-        let a = new ArrayBuffer(256);
-        let u = new Uint8Array(a,35);
-        u[5] = 42;
-        u.fill(0,10,36);
-        const {x,y} = p;
-        return {
-            x: x + this.dx,
-            y: y + this.dy,
-        };
-    }
 }

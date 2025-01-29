@@ -8,7 +8,7 @@ describe('polar vector tests', () => {
     });
     test('initialize r, pi/2', () => {
         const v = new PolarVector(2,Math.PI/2);
-        expect(v.dx).toBe(0);
+        expect(v.dx).toBeCloseTo(0);
         expect(v.dy).toBe(2);
     });
     test('magnitude', () => {
@@ -29,4 +29,8 @@ describe('polar vector tests', () => {
         expect(w.magnitude).toBe(6);
         expect(w.angle).toBe(Math.PI/4);
     });
+    test('move', () => {
+        const v = new PolarVector(3, Math.PI);
+        expect(v.move({x:1,y:2})).toBe({x:-2,y:2});
+    })
 });

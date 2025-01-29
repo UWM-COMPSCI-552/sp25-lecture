@@ -1,6 +1,6 @@
-import { Vector2D } from './Vector';
+import { AbstractVector, Vector2D } from './Vector';
 
-export class EuclideanVector2D implements Vector2D {
+export class EuclideanVector2D extends AbstractVector {
     readonly dx : number;
     readonly dy : number;
 
@@ -13,6 +13,7 @@ export class EuclideanVector2D implements Vector2D {
     constructor (dx : number)
     constructor (dx : number, dy : number)
     constructor (dx ?: number, dy ?: number) { // implementation only (private)
+        super();
         if (dx !== undefined) {
             this.dx = dx;
             this.dy = dy ?? dx+1
@@ -59,4 +60,5 @@ export class EuclideanVector2D implements Vector2D {
     scale(amt : number) : Vector2D {
         return new EuclideanVector2D(this.dx * amt, this.dy * amt);
     }
+
 }

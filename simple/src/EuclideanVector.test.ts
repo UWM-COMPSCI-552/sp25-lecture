@@ -35,5 +35,15 @@ describe('euclidean vector tests', () => {
         const v = new EuclideanVector2D(3,4);
         const w = v.scale(2);
         expect(w.dx).toBe(6);
+    });
+    test('move', () => {
+        const v = new EuclideanVector2D(5,6);
+        const r = v.move({ x:4, y:6});
+        expect(r.x).toBe(9);
+        expect(r.y).toBe(12);
+    });
+    test('angle', () => {
+        const v = new EuclideanVector2D(0,3);
+        expect(v.angle).toBe(Math.PI/2);
     })
 });
