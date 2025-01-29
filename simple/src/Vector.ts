@@ -6,7 +6,14 @@ export interface Vector2D {
     magnitude : number;
     angle : number
     add(other : Vector2D) : Vector2D;
-    dot(other : Vector2D) : number
+
+   /**
+     * Multiplies corresponding elements and returns the sum.
+     * @param other the vector to compute dot with
+     * @returns the sum of the products of the coresponding elements
+     */
+   dot(other : Vector2D) : number;
+   
     scale(amt : number) : Vector2D;
     move(p : Point) : Point;
 
@@ -21,5 +28,8 @@ export abstract class AbstractVector {
             x: x + this.dx,
             y: y + this.dy,
         };
+    }
+    dot(other : Vector2D) : number {
+        return this.dx * other.dx + this.dy * other.dy;
     }
 }

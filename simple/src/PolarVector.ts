@@ -24,10 +24,6 @@ export class PolarVector extends AbstractVector {
         return new EuclideanVector2D(this.dx + other.dx, this.dy + other.dy);
     }
 
-    dot(other: Vector2D): number {
-        return ((this.dx * other.dx) + (this.dy * other.dy)); 
-    }
-
     scale(amt: number): Vector2D {
         return new PolarVector(this.magnitude * amt, this.angle);
     }

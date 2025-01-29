@@ -44,15 +44,6 @@ export class EuclideanVector2D extends AbstractVector {
     }
 
     /**
-     * Multiplies corresponding elements and returns the sum.
-     * @param other the vector to compute dot with
-     * @returns the sum of the products of the coresponding elements
-     */
-    dot(other : Vector2D) : number {
-        return this.dx * other.dx + this.dy * other.dy;
-    }
-
-    /**
      * Returns a new vector which is this vector scaled by the amount.
      * @param amt the amount (a number)
      * @returns vector which is the scaling of this
