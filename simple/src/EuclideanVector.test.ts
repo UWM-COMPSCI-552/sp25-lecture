@@ -16,18 +16,16 @@ describe('euclidean vector tests', () => {
         const v = new EuclideanVector2D(2);
         expect(v.dy).toBe(3);
     })
-    console.log("here");
     test('zeros', () => {
         const v = new EuclideanVector2D(0);
         expect(v.dy).toBe(1);
     });
-    console.log("there");
     test('zero #2', () => {
         const v = new EuclideanVector2D(1,0);
         expect(v.dx).toBe(1);
         expect(v.dy).toBe(0);
     });
-    test('weird', () => {
+    test('add', () => {
         const v = new EuclideanVector2D(1,1);
         const w = new EuclideanVector2D(2,3);
         const x = v.add(w);

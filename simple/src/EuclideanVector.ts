@@ -17,7 +17,7 @@ export class EuclideanVector2D implements Vector2D {
             this.dx = dx;
             this.dy = dy ?? dx+1
         } else {
-            // dx is undefined, null, "", 0, NaN
+            // dx is undefined
             this.dx = this.dy = 0;
         }
     }
