@@ -1,4 +1,3 @@
-import { EuclideanVector2D } from './EuclideanVector';
 import { Vector2D, AbstractVector } from './Vector';
 
 export class PolarVector extends AbstractVector {
