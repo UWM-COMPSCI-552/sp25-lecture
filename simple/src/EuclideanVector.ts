@@ -39,11 +39,7 @@ export class EuclideanVector2D extends AbstractVector {
         return Math.atan2(this.dy, this.dx);
     }
 
-    add(other : Vector2D) {
-        return new EuclideanVector2D(other.dx + this.dx, other.dy + this.dy);
-    }
-
-    /**
+   /**
      * Returns a new vector which is this vector scaled by the amount.
      * @param amt the amount (a number)
      * @returns vector which is the scaling of this

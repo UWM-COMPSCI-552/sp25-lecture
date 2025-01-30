@@ -1,3 +1,4 @@
+import { EuclideanVector2D } from "./EuclideanVector";
 import { PolarVector } from "./PolarVector";
 
 describe('polar vector tests', () => {
@@ -32,5 +33,9 @@ describe('polar vector tests', () => {
     test('move', () => {
         const v = new PolarVector(3, Math.PI);
         expect(v.move({x:1,y:2})).toBe({x:-2,y:2});
-    })
+    });
+    test('equal', () => {
+        const v = new PolarVector(2,0);
+        expect(v.move({x:0,y:0})).toStrictEqual(new EuclideanVector2D(2,0).move({x:0,y:0}));
+    });
 });

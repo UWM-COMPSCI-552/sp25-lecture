@@ -1,3 +1,4 @@
+import { EuclideanVector2D } from "./EuclideanVector";
 import { Point } from "./Point";
 
 export interface Vector2D {
@@ -22,6 +23,11 @@ export interface Vector2D {
 export abstract class AbstractVector {
     abstract dx : number;
     abstract dy : number;
+    constructor() {}
+    
+    add(other: Vector2D): Vector2D {
+        return new EuclideanVector2D(this.dx + other.dx, this.dy + other.dy);
+    }
     move(p : Point) : Point {
         const {x,y} = p;
         return {
