@@ -30,5 +30,7 @@ export abstract class Shape {
      * Scale the shape around its center
      * @param amt amount to scale shape by, must be non-zero
      */
-    abstract scale(amt : number) : void;
+    scale(amt : number) : void {
+        if (amt === 0) throw new RangeError("cvannot scale by zero");
+    }
 }

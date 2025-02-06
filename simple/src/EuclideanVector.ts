@@ -1,3 +1,4 @@
+import { Point } from './Point';
 import { AbstractVector, Vector2D } from './Vector';
 
 export class EuclideanVector2D extends AbstractVector {
@@ -23,6 +24,10 @@ export class EuclideanVector2D extends AbstractVector {
         }
     }
 
+    public static fromPoints(p1 : Point, p2 : Point) {
+        return new EuclideanVector2D(p2.x - p1.x, p2.y - p1.y);
+    }
+    
     toString() : string {
         /*
          *Template string: starts in backquotesd, with holes

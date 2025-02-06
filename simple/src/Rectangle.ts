@@ -22,4 +22,10 @@ export class Rectangle extends Shape {
             this.height = x.y - p1.y; 
         }
     }
+
+    override scale(amt : number) {
+        super.scale(amt);
+        this.width *= amt; 
+        this.height *= amt;
+    }
 }
