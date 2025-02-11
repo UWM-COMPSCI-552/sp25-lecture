@@ -33,4 +33,6 @@ export abstract class Shape {
     scale(amt : number) : void {
         if (amt === 0) throw new RangeError("cvannot scale by zero");
     }
+
+    abstract draw(ctx : CanvasRenderingContext2D ) : void;
 }

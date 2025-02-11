@@ -54,4 +54,10 @@ export class Group extends Shape implements Iterable<Shape> {
             s.move(orig.scale(amt-1));
         }
     }
+
+    override draw(ctx: CanvasRenderingContext2D): void {
+        for (let s of this.elements) {
+            s.draw(ctx);
+        }
+    }
 }

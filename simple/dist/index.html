@@ -2,10 +2,25 @@
 
 <head>
     <title>Simple</title>
+    <script type="module" src="draw.js">
+    </script>
+    <script type="module">
+        import { draw } from './draw.js';
+        console.log('in script');
+        window.draw552 = draw;
+    </script>
+    <style>
+        canvas { border : 1px solid black; }
+    </style>
 </head>
 
-<body>
-    Nothing yet.
+<body onload="window.draw552()">
+    <h2>The Canvas</h2>
+
+    <canvas id='drawcanvas' width="300" height ="200">
+
+    </canvas>
+
 </body>
 
 </html>

@@ -28,4 +28,11 @@ export class Rectangle extends Shape {
         this.width *= amt; 
         this.height *= amt;
     }
+
+    override draw(ctx: CanvasRenderingContext2D): void {
+        ctx.strokeStyle = 'black';
+        ctx.beginPath();
+        ctx.rect(this.center.x-this.width/2, this.center.y-this.height/2, this.width, this.height);
+        ctx.stroke();
+    }
 }
