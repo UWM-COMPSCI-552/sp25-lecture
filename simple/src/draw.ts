@@ -17,6 +17,9 @@ export function draw() {
             const sh = new Rectangle({x:4,y:44}, 44, 22);
             sh.draw(ctx);
 
+            const sh2 = new Rectangle({x:100,y:100}, 50);   
+            sh2.draw(ctx);
+            
             const cs = new Circle({x:100,y:100}, 25);
             cs.draw(ctx);
         }
