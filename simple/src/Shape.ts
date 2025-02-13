@@ -35,4 +35,8 @@ export abstract class Shape {
     }
 
     abstract draw(ctx : CanvasRenderingContext2D ) : void;
+
+    toJSON() : { center : Point } {
+        return {center : this.center};
+    }
 }

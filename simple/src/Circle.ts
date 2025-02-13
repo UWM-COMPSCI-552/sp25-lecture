@@ -20,4 +20,10 @@ export class Circle extends Shape {
         ctx.arc(this.center.x, this.center.y, this.radius, 0, Math.PI*2);
         ctx.stroke();
     }
+
+    override toJSON() : { center : Point, radius ?: number } {
+        let result : { center : Point, radius ?: number} = super.toJSON();
+        result.radius = this.radius;
+        return result;
+    }
 }
