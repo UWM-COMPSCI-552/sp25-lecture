@@ -7,19 +7,27 @@
     <script type="module">
         import { draw } from './draw.js';
         console.log('in script');
-        window.draw552 = draw;
+        window.draw552 = draw();
     </script>
     <style>
         canvas { border : 1px solid black; }
     </style>
 </head>
 
-<body onload="window.draw552()">
+<body>
     <h2>The Canvas</h2>
 
+    <label for="selectmode">Choose a tool:</label>
+    <select id="selectmode">
+        <option value="select">Select</option>
+        <option value="Rectangle">Rectangle</option>
+        <option value="Circle">Circle</option>
+    </select><br/>
     <canvas id='drawcanvas' width="300" height ="200">
-
     </canvas>
+    <br/>
+    <input id="drawfilename" type="text"></input>
+    <button onclick="draw552.save()">Save</button>
 
 </body>
 

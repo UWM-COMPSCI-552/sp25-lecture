@@ -3,17 +3,27 @@ import { Point } from "./Point";
 import { Rectangle } from "./Rectangle";
 import { Shape } from "./Shape";
 
+//import { writeFile } from 'node:fs'; 
+
 class Draw {
     private drawing : Array<Shape> = [];
     private canvas : HTMLCanvasElement;
+    private modeSelect : HTMLSelectElement;
+    private filenameInput : HTMLInputElement;
     private ctx : CanvasRenderingContext2D;
 
-    constructor(canvas : HTMLCanvasElement) {
+    constructor(canvas : HTMLCanvasElement, modeSelect : HTMLSelectElement, filenameInput : HTMLInputElement) {
         this.canvas = canvas;
+        this.modeSelect = modeSelect;
+        this.filenameInput = filenameInput;
         this.ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
         canvas.addEventListener('mousedown', (e) => this.mouseDown(e));
         canvas.addEventListener('mouseup', (e) => this.mouseUp(e));
         canvas.addEventListener('mousemove', (e) => this.mouseMove(e));
+        modeSelect.addEventListener('change', () => {
+            // the modeis changed
+            console.log('mode changed');
+        });
     }
 
     offsetPt(e : MouseEvent) : Point {
@@ -53,15 +63,31 @@ class Draw {
             s.draw(this.ctx);
         }
     }
+
+    public load() {
+
+    }
+    public save() {
+        const filename = this.filenameInput.value;
+        console.log('filename = ', filename);
+        const json = JSON.stringify(this.drawing);
+        console.log('json =', json);
+        /*writeFile(filename, json, () => {
+            console.log('write happened');
+        });*/
+    }
 }
 
 export function draw() {
     console.log('draw is running!');
     const canvas = document.getElementById('drawcanvas');
+    const modeselect = document.getElementById('selectmode');
+    const fi = document.getElementById('drawfilename');
     if (canvas instanceof HTMLCanvasElement) {
         console.log('Found a canvas');
         const ctx = canvas.getContext('2d');
         console.log('cts =',ctx);
+        console.log('fi =', fi);
         if (ctx != null) {
             console.log(' drawing rectangle');
             /*ctx.strokeStyle = 'red';
@@ -77,7 +103,7 @@ export function draw() {
             const cs = new Circle({x:100,y:100}, 25);
             cs.draw(ctx);
 
-            const draw = new Draw(canvas);
+            return new Draw(canvas,modeselect as HTMLSelectElement, fi as HTMLInputElement);
         }
     }
 }
