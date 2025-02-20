@@ -1,4 +1,5 @@
 import { Circle } from "./Circle";
+import { EuclideanVector2D } from "./EuclideanVector";
 import { Point } from "./Point";
 import { Rectangle } from "./Rectangle";
 import { Shape } from "./Shape";
@@ -12,6 +13,15 @@ class Draw {
     private filenameInput : HTMLInputElement;
     private ctx : CanvasRenderingContext2D;
 
+    private readonly rectangleCreate = (pt1: Point, pt2: Point) => new Rectangle({ x: (pt1.x + pt2.x) / 2, y: (pt1.y + pt2.y) / 2 }, Math.abs(pt1.x - pt2.x), Math.abs(pt1.y - pt2.y));
+
+    private readonly circleCreate = (pt1: Point, pt2: Point) => {
+        const radius = EuclideanVector2D.fromPoints(pt1, pt2).magnitude;
+        return new Circle(pt1, radius);
+    };
+
+    private create : (pt1:Point,pt2:Point) => Shape = (p1,p2) => { throw Error() };
+
     constructor(canvas : HTMLCanvasElement, modeSelect : HTMLSelectElement, filenameInput : HTMLInputElement) {
         this.canvas = canvas;
         this.modeSelect = modeSelect;
@@ -23,6 +33,16 @@ class Draw {
         modeSelect.addEventListener('change', () => {
             // the modeis changed
             console.log('mode changed');
+            
+            switch (this.modeSelect.value) {
+                case "Rectangle":
+                this.create = this.rectangleCreate;
+                break;
+                case "Circle":
+                this.create = this.circleCreate;
+                break;
+            }
+            
         });
     }
 
@@ -39,20 +59,20 @@ class Draw {
     private mouseUp(e : MouseEvent) : void {
         const pt1 = this.current as Point;
         const pt2 = this.offsetPt(e);
-        const r = this.createRectangle(pt1, pt2);
+        const r = this.createShape(pt1, pt2);
         this.drawing.push(r);
         this.repaint();
     }
 
-    private createRectangle(pt1: Point, pt2: Point) {
-        return new Rectangle({ x: (pt1.x + pt2.x) / 2, y: (pt1.y + pt2.y) / 2 }, Math.abs(pt1.x - pt2.x), Math.abs(pt1.y - pt2.y));
+    private createShape(pt1: Point, pt2: Point) : Shape {
+        return this.create(pt1,pt2);
     }
 
     private mouseMove(e : MouseEvent) : void {
         if (e.buttons === 1) {
             // drag!
             const pt2 = this.offsetPt(e);
-            const r = this.createRectangle(this.current as Point, pt2);
+            const r = this.createShape(this.current as Point, pt2);
             r.draw(this.ctx);
         }
     }
@@ -89,7 +109,6 @@ export function draw() {
         console.log('cts =',ctx);
         console.log('fi =', fi);
         if (ctx != null) {
-            console.log(' drawing rectangle');
             /*ctx.strokeStyle = 'red';
             ctx.beginPath();
             ctx.rect(50,50,70,30);
