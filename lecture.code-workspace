@@ -6,6 +6,10 @@
 		},
 		{
 			"path": "examples"
+		},
+		{
+			"name": "next",
+			"path": "next"
 		}
 	],
 	"settings": {}
