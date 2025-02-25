@@ -60,4 +60,12 @@ export class Group extends Shape implements Iterable<Shape> {
             s.draw(ctx);
         }
     }
+
+    override isOn(p: Point): boolean {
+        for (const s of this.elements) {
+            if (s.isOn(p)) return true;
+        }
+        return false;
+    }
+
 }

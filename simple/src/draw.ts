@@ -6,6 +6,43 @@ import { Shape } from "./Shape";
 
 //import { writeFile } from 'node:fs'; 
 
+type Drawing = Array<Shape>;
+
+interface Mode {
+    mouseDown(p : Point) :  void;
+    mouseDrag(p : Point) : void;
+    mouseUp(p : Point) : void;
+}
+
+abstract class CreateMode implements Mode {
+    drawing : Drawing;
+    ctx : CanvasRenderingContext2D;
+
+    constructor(drawing : Drawing, ctx : CanvasRenderingContext2D) {
+        this.drawing = drawing;
+        this.ctx = ctx;
+    }
+
+    current : Point | undefined;
+    mouseDown(p : Point) : void {
+        this.current = p;
+    }
+
+    mouseDrag(pt2 : Point) : void {
+        const r = this.createShape(this.current as Point, pt2);
+        r.draw(this.ctx);
+
+    }
+
+    mouseUp(pt2 : Point) : void {
+        const pt1 = this.current as Point;
+        const r = this.createShape(pt1, pt2);
+        this.drawing.push(r);
+        // this.repaint(); // let Draw find out by "Observing" the drawing
+    }
+    abstract createShape(pt1 : Point, pt2 : Point) : Shape;
+}
+
 class Draw {
     private drawing : Array<Shape> = [];
     private canvas : HTMLCanvasElement;
@@ -40,6 +77,8 @@ class Draw {
                 break;
                 case "Circle":
                 this.create = this.circleCreate;
+                break;
+                case "Select":
                 break;
             }
             

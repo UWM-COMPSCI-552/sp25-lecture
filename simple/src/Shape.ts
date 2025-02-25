@@ -39,4 +39,16 @@ export abstract class Shape {
     toJSON() : { center : Point } {
         return {center : this.center};
     }
+
+    /**
+     * Tolerance for clicking.
+     */
+    static readonly CLOSE = 2;
+
+    /**
+     * Is the point on this shape?
+     * @param p point to examine
+     * @return whether the shape contains the point
+     */
+    abstract isOn(p : Point) : boolean;
 }

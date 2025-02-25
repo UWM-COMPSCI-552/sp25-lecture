@@ -35,4 +35,17 @@ export class Rectangle extends Shape {
         ctx.rect(this.center.x-this.width/2, this.center.y-this.height/2, this.width, this.height);
         ctx.stroke();
     }
+
+    override isOn(p: Point): boolean {
+        const xdiff = Math.abs(p.x - this.center.x);
+        const ydiff = Math.abs(p.y - this.center.y);
+        const w2 = this.width / 2;
+        const h2 = this.height / 2;
+        const inRange = ( (xdiff <= w2) && (ydiff <= h2));
+        const onEdges = (
+            (Math.abs(xdiff - w2)) < Rectangle.CLOSE ||
+            (Math.abs(ydiff - h2)) < Rectangle.CLOSE);
+        return inRange && onEdges;
+    }
+
 }

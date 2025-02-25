@@ -1,3 +1,4 @@
+import { EuclideanVector2D } from "./EuclideanVector";
 import { Point } from "./Point";
 import { Shape } from "./Shape";
 
@@ -25,5 +26,10 @@ export class Circle extends Shape {
         let result : { center : Point, radius ?: number} = super.toJSON();
         result.radius = this.radius;
         return result;
+    }
+
+    override isOn(p: Point): boolean {
+        const dist = EuclideanVector2D.fromPoints(this.center, p).magnitude;
+        return Math.abs(dist - this.radius) < Shape.CLOSE;
     }
 }
