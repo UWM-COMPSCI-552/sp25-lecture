@@ -6,7 +6,34 @@ import { Shape } from "./Shape";
 
 //import { writeFile } from 'node:fs'; 
 
-type Drawing = Array<Shape>;
+type ShapeObserver = (d:Drawing) => void;
+
+class Drawing implements Iterable<Shape> {
+    private contents : Array<Shape> = [];
+    private observers : Array<ShapeObserver> = [];
+
+    public add(sh :Shape) {
+        this.contents.push(sh);
+        this.notifyObservers();
+    }
+
+    public addObserver(obs : ShapeObserver) {
+        this.observers.push(obs);
+    }
+
+    [Symbol.iterator](): Iterator<Shape, any, any> {
+        return this.contents[Symbol.iterator]();
+    }
+
+    public notifyObservers() {
+        for (const obs of this.observers) {
+            obs(this);
+        }
+    }
+}
+
+
+function makeDrawing() : Drawing { return new Drawing(); }
 
 interface Mode {
     mouseDown(p : Point) :  void;
@@ -14,13 +41,17 @@ interface Mode {
     mouseUp(p : Point) : void;
 }
 
-abstract class CreateMode implements Mode {
+type CreateFunction = (pt1 : Point, pt2 : Point) => Shape;
+
+class CreateMode implements Mode {
     drawing : Drawing;
     ctx : CanvasRenderingContext2D;
+    func : CreateFunction;
 
-    constructor(drawing : Drawing, ctx : CanvasRenderingContext2D) {
+    constructor(drawing : Drawing, ctx : CanvasRenderingContext2D, cfunc : CreateFunction) {
         this.drawing = drawing;
         this.ctx = ctx;
+        this.func = cfunc;
     }
 
     current : Point | undefined;
@@ -29,41 +60,90 @@ abstract class CreateMode implements Mode {
     }
 
     mouseDrag(pt2 : Point) : void {
-        const r = this.createShape(this.current as Point, pt2);
+        const r = this.func(this.current as Point, pt2);
+        this.ctx.strokeStyle = 'blue';
         r.draw(this.ctx);
 
     }
 
     mouseUp(pt2 : Point) : void {
         const pt1 = this.current as Point;
-        const r = this.createShape(pt1, pt2);
-        this.drawing.push(r);
-        // this.repaint(); // let Draw find out by "Observing" the drawing
+        const r = this.func(pt1, pt2);
+        this.drawing.add(r);
     }
-    abstract createShape(pt1 : Point, pt2 : Point) : Shape;
+}
+
+class SelectMode implements Mode {
+    private drawing : Drawing;
+    private ctx : CanvasRenderingContext2D;
+    private selection : Shape | undefined;
+
+    constructor(drawing : Drawing, ctx : CanvasRenderingContext2D) {
+        this.drawing = drawing;
+        this.ctx = ctx;
+    }
+
+    private current : Point | undefined;
+
+    mouseDown(p: Point): void {
+        let hit : Shape | undefined;
+        for (const sh of this.drawing) {
+            if (sh.isOn(p)) {
+                hit = sh;
+            }
+        }
+        if (hit !== undefined) {
+            this.ctx.strokeStyle = 'magenta';
+            hit.draw(this.ctx);
+            this.current = p;
+        }
+        this.selection = hit;
+    }
+    mouseDrag(p: Point): void {
+        if (this.selection && this.current) {
+            const v = EuclideanVector2D.fromPoints(this.current,p);
+            console.log('moved:',v);
+            this.selection.move(v);
+            this.current = p;
+            this.selection.draw(this.ctx);
+        }
+    }
+    mouseUp(p: Point): void {
+        this.drawing.notifyObservers();
+    }
 }
 
 class Draw {
-    private drawing : Array<Shape> = [];
+    private drawing : Drawing;
     private canvas : HTMLCanvasElement;
     private modeSelect : HTMLSelectElement;
     private filenameInput : HTMLInputElement;
     private ctx : CanvasRenderingContext2D;
 
-    private readonly rectangleCreate = (pt1: Point, pt2: Point) => new Rectangle({ x: (pt1.x + pt2.x) / 2, y: (pt1.y + pt2.y) / 2 }, Math.abs(pt1.x - pt2.x), Math.abs(pt1.y - pt2.y));
+    private readonly selectMode : SelectMode;
+    private readonly rectangleMode : CreateMode;
+    private readonly circleMode : CreateMode; 
+    
+    private mode : Mode;
 
     private readonly circleCreate = (pt1: Point, pt2: Point) => {
         const radius = EuclideanVector2D.fromPoints(pt1, pt2).magnitude;
         return new Circle(pt1, radius);
     };
 
-    private create : (pt1:Point,pt2:Point) => Shape = (p1,p2) => { throw Error() };
-
-    constructor(canvas : HTMLCanvasElement, modeSelect : HTMLSelectElement, filenameInput : HTMLInputElement) {
+     constructor(canvas : HTMLCanvasElement, modeSelect : HTMLSelectElement, filenameInput : HTMLInputElement) {
+        this.drawing = makeDrawing();
         this.canvas = canvas;
         this.modeSelect = modeSelect;
         this.filenameInput = filenameInput;
         this.ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+
+        this.selectMode = new SelectMode(this.drawing, this.ctx);
+        this.rectangleMode = new CreateMode(this.drawing, this.ctx, (p1,p2) => new Rectangle(p1,p2));
+        this.circleMode = new CreateMode(this.drawing, this.ctx, this.circleCreate);
+        this.mode = this.selectMode;
+        
+        this.drawing.addObserver(() => { this.repaint(); });
         canvas.addEventListener('mousedown', (e) => this.mouseDown(e));
         canvas.addEventListener('mouseup', (e) => this.mouseUp(e));
         canvas.addEventListener('mousemove', (e) => this.mouseMove(e));
@@ -73,13 +153,14 @@ class Draw {
             
             switch (this.modeSelect.value) {
                 case "Rectangle":
-                this.create = this.rectangleCreate;
-                break;
+                    this.mode = this.rectangleMode;
+                    break;
                 case "Circle":
-                this.create = this.circleCreate;
-                break;
+                    this.mode = this.circleMode;
+                    break;
                 case "Select":
-                break;
+                    this.mode = this.selectMode;
+                    break;
             }
             
         });
@@ -92,31 +173,23 @@ class Draw {
     private current : Point | undefined;
 
     private mouseDown(e : MouseEvent) : void {
-        this.current = this.offsetPt(e);
+        this.mode.mouseDown(this.offsetPt(e));
     }
 
     private mouseUp(e : MouseEvent) : void {
-        const pt1 = this.current as Point;
-        const pt2 = this.offsetPt(e);
-        const r = this.createShape(pt1, pt2);
-        this.drawing.push(r);
-        this.repaint();
+        this.mode.mouseUp(this.offsetPt(e));
     }
 
-    private createShape(pt1: Point, pt2: Point) : Shape {
-        return this.create(pt1,pt2);
-    }
 
     private mouseMove(e : MouseEvent) : void {
         if (e.buttons === 1) {
             // drag!
-            const pt2 = this.offsetPt(e);
-            const r = this.createShape(this.current as Point, pt2);
-            r.draw(this.ctx);
+            this.mode.mouseDrag(this.offsetPt(e));
         }
     }
 
     public repaint() {
+        this.ctx.strokeStyle = 'black';
         this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
         for (const s of this.drawing) {
             s.draw(this.ctx);
