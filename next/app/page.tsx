@@ -1,3 +1,5 @@
+'use-client';
+
 import { Provider } from "@/components/ui/provider";
 import { ChakraProvider, HStack, Icon, Input, List, Text, VStack } from "@chakra-ui/react";
 import { MdAdd, MdDelete } from "react-icons/md";
