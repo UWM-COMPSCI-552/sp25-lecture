@@ -24,6 +24,6 @@ export default function Page() {
       Do CS 552 homework #4
       </List.Item>
     </List.Root>
-    <HStack> <Input id="newitemid"/>  <Icon> <MdAdd/> </Icon></HStack>
+    <HStack> <Input id="newitemid"/>  <Icon><MdAdd/></Icon></HStack>
   </VStack>;
 }
