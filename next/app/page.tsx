@@ -1,29 +1,52 @@
-'use-client';
+'use client';
 
 import { Provider } from "@/components/ui/provider";
-import { ChakraProvider, HStack, Icon, Input, List, Text, VStack } from "@chakra-ui/react";
+import { Button, ChakraProvider, Flex, HStack, Icon, IconButton, Input, List, Text, VStack } from "@chakra-ui/react";
+import { MouseEventHandler, useRef, useState } from "react";
 import { MdAdd, MdDelete } from "react-icons/md";
 // import { DeleteIcon, AddIcon } from "@chakra-ui/icons";
 
-export const metadata = {
-  title: "App Router",
-};
+type Task = { id:number, description : string } ;
+
+const DEFAULT_LIST = [{id: 1, description : "CS 552 Homework"}];
 
 export default function Page() {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [tasks, setTasks] = useState([...DEFAULT_LIST]);
+  const deleteItem : MouseEventHandler<HTMLButtonElement> = (e) => {
+    const t = e.currentTarget as HTMLButtonElement;
+    console.log('removing ', t.parentElement);
+  }
+  function makeTaskItem(task:Task) {
+    return (
+      <List.Item key={task.id}> {task.description} <Flex/> 
+        <IconButton variant='subtle' aria-label="Delete" onClick={deleteItem} asChild color="red.500">
+          <MdDelete/>
+        </IconButton> 
+      </List.Item>);
+  }
+  function addNewItem() {
+    if (inputRef.current == null) {
+      console.log('oops not defined');
+    } else {
+      const newDesc = inputRef.current.value;
+      console.log("Adding", newDesc);
+      
+      setTasks([...tasks,{description:newDesc, id:Date.now()}]);
+      
+     /* This doesn't work
+     tasks.push({id:Date.now(), description:newDesc});
+     setTasks(tasks);
+     */
+    } 
+  }
   return <VStack>
     <Text>TODO List</Text>
     <List.Root>
-      <List.Item>
-        <List.Indicator asChild color="red.500"><MdDelete/></List.Indicator>
-        Wash dishes
-      </List.Item>
-      <List.Item>
-      <List.Indicator asChild color="red.500">
-        <MdDelete />
-      </List.Indicator>
-      Do CS 552 homework #4
-      </List.Item>
+      {
+        tasks.map(  makeTaskItem )
+      }
     </List.Root>
-    <HStack> <Input id="newitemid"/>  <Icon><MdAdd/></Icon></HStack>
+    <HStack> <Input ref={inputRef}/>  <IconButton variant='subtle' aria-label="Add new item" onClick={addNewItem}><MdAdd/></IconButton></HStack>
   </VStack>;
 }
