@@ -13,14 +13,14 @@ const DEFAULT_LIST = [{id: 1, description : "CS 552 Homework"}];
 export default function Page() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [tasks, setTasks] = useState([...DEFAULT_LIST]);
-  const deleteItem : MouseEventHandler<HTMLButtonElement> = (e) => {
-    const t = e.currentTarget as HTMLButtonElement;
-    console.log('removing ', t.parentElement);
+  const deleteItem = (t : Task) => {
+    
+    // TODO: CODE!
   }
   function makeTaskItem(task:Task) {
     return (
       <List.Item key={task.id}> {task.description} <Flex/> 
-        <IconButton variant='subtle' aria-label="Delete" onClick={deleteItem} asChild color="red.500">
+        <IconButton variant='subtle' aria-label="Delete" onClick={() => deleteItem(task)} asChild color="red.500">
           <MdDelete/>
         </IconButton> 
       </List.Item>);
