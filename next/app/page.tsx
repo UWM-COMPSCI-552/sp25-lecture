@@ -14,8 +14,8 @@ export default function Page() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [tasks, setTasks] = useState([...DEFAULT_LIST]);
   const deleteItem = (t : Task) => {
-    
-    // TODO: CODE!
+    // quiz answer:
+    setTasks(tasks.filter((task) => task.id !== t.id));
   }
   function makeTaskItem(task:Task) {
     return (
