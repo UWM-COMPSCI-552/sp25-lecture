@@ -153,23 +153,24 @@ class Draw {
         canvas.addEventListener('mousedown', (e) => this.mouseDown(e));
         canvas.addEventListener('mouseup', (e) => this.mouseUp(e));
         canvas.addEventListener('mousemove', (e) => this.mouseMove(e));
-        modeSelect.addEventListener('change', () => {
-            // the modeis changed
-            console.log('mode changed');
-            
-            switch (this.modeSelect.value) {
-                case "Rectangle":
-                    this.mode = this.rectangleMode;
-                    break;
-                case "Circle":
-                    this.mode = this.circleMode;
-                    break;
-                case "Select":
-                    this.mode = this.selectMode;
-                    break;
-            }
-            
-        });
+        const modeChangefunction = () => {
+          // the modeis changed
+          console.log('mode changed');
+          
+          switch (this.modeSelect.value) {
+              case "Rectangle":
+                  this.mode = this.rectangleMode;
+                  break;
+              case "Circle":
+                  this.mode = this.circleMode;
+                  break;
+              case "Select":
+                  this.mode = this.selectMode;
+                  break;
+          }
+          
+      };
+        modeSelect.addEventListener('change', modeChangefunction);
     }
 
     offsetPt(e : MouseEvent) : Point {
