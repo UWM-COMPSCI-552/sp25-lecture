@@ -35,6 +35,6 @@ export default function Page() {
     </canvas>
     <br/>
     <input id="drawfilename" type="text"></input>
-    <button onClick={(e) => (draw as Draw).save()}>Save</button></div>
+    <button onClick={(_e) => (draw as Draw).save()}>Save</button></div>
   );
 }
