@@ -1,10 +1,14 @@
 'use client';
 
 import { Draw, draw } from '@/src/draw'
+import { useEffect } from 'react';
 
 
 export default function Page() {
   let draw552 : Draw = draw() as Draw
+  useEffect(() => {
+    draw552 = draw() as Draw;
+  },[]);
   return (
     <div><h2>The Canvas</h2>
     <label htmlFor="selectmode">Choose a tool:</label>
