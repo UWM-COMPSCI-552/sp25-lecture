@@ -213,20 +213,5 @@ export class Draw {
     }
 }
 
-export function draw() {
-    console.log('draw is running!');
-    const canvas = document.getElementById('drawcanvas');
-    const modeselect = document.getElementById('selectmode');
-    const fi = document.getElementById('drawfilename');
-    if (canvas instanceof HTMLCanvasElement) {
-        console.log('Found a canvas');
-        const ctx = canvas.getContext('2d');
-        console.log('cts =',ctx);
-        console.log('fi =', fi);
-        if (ctx != null) {
-            return new Draw(canvas,modeselect as HTMLSelectElement, fi as HTMLInputElement);
-        }
-    }
-}
 
 console.log('loaded');
