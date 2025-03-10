@@ -6,11 +6,12 @@ import { useEffect, useRef, useState } from 'react';
 
 export default function Page() {
   const canvasRef = useRef<HTMLCanvasElement|null>(null);
+  const modeSelectRef = useRef<HTMLSelectElement>(null);
   const [draw, setDraw] = useState<Draw|null>(null);
   useEffect(() => {
     console.log('draw is running!');
     const canvas = canvasRef.current;
-    const modeselect = document.getElementById('selectmode');
+    const modeselect = modeSelectRef.current;
     const fi = document.getElementById('drawfilename');
     if (canvas instanceof HTMLCanvasElement) {
         console.log('Found a canvas');
@@ -26,7 +27,7 @@ export default function Page() {
   return (
     <div><h2>The Canvas</h2>
     <label htmlFor="selectmode">Choose a tool:</label>
-    <select id="selectmode">
+    <select ref={modeSelectRef}>
     <option value="Select">Select</option>
     <option value="Rectangle">Rectangle</option>
     <option value="Circle">Circle</option>
