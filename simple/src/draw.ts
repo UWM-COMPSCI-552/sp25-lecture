@@ -113,7 +113,7 @@ class SelectMode implements Mode {
     }
 }
 
-class Draw {
+export class Draw {
     private drawing : Drawing;
     private canvas : HTMLCanvasElement;
     private modeSelect : HTMLSelectElement;
@@ -143,6 +143,8 @@ class Draw {
         this.circleMode = new CreateMode(this.drawing, this.ctx, this.circleCreate);
         this.mode = this.selectMode;
         
+        console.log('adding listeners');
+
         this.drawing.addObserver(() => { this.repaint(); });
         canvas.addEventListener('mousedown', (e) => this.mouseDown(e));
         canvas.addEventListener('mouseup', (e) => this.mouseUp(e));
@@ -173,6 +175,7 @@ class Draw {
     private current : Point | undefined;
 
     private mouseDown(e : MouseEvent) : void {
+        console.log('mouse down', e);
         this.mode.mouseDown(this.offsetPt(e));
     }
 
