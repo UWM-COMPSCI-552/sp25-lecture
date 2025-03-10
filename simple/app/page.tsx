@@ -118,10 +118,10 @@ class SelectMode implements Mode {
 }
 
 class Draw {
-    private drawing : Drawing;
+    drawing : Drawing;
     private canvas : HTMLCanvasElement;
     private modeSelect : HTMLSelectElement;
-    private filenameInput : HTMLInputElement;
+    filenameInput : HTMLInputElement;
     private ctx : CanvasRenderingContext2D;
 
     private readonly selectMode : SelectMode;
@@ -207,15 +207,6 @@ class Draw {
     public load() {
 
     }
-    public save() {
-        const filename = this.filenameInput.value;
-        console.log('filename = ', filename);
-        const json = JSON.stringify(this.drawing);
-        console.log('json =', json);
-        /*writeFile(filename, json, () => {
-            console.log('write happened');
-        });*/
-    }
 }
 
 
@@ -242,6 +233,13 @@ export default function Page() {
     }
 
   },[]);
+  function doSave(): void {
+    const d = draw as Draw;
+    const filename = d.filenameInput.value;
+    console.log('filename = ', filename);
+    const json = JSON.stringify(d.drawing);
+    console.log('json =', json);
+  }
   return (
     <div><h2>The Canvas</h2>
     <label htmlFor="selectmode">Choose a tool:</label>
@@ -254,6 +252,8 @@ export default function Page() {
     </canvas>
     <br/>
     <input ref={fiRef} type="text"></input>
-    <button onClick={(_e) => (draw as Draw).save()}>Save</button></div>
+    <button onClick={(_e) => doSave()}>Save</button></div>
   );
+
+  
 }
