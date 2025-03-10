@@ -224,19 +224,6 @@ export function draw() {
         console.log('cts =',ctx);
         console.log('fi =', fi);
         if (ctx != null) {
-            /*ctx.strokeStyle = 'red';
-            ctx.beginPath();
-            ctx.rect(50,50,70,30);
-            ctx.stroke();*/
-            const sh = new Rectangle({x:4,y:44}, 44, 22);
-            sh.draw(ctx);
-
-            const sh2 = new Rectangle({x:100,y:100}, 50);   
-            sh2.draw(ctx);
-            
-            const cs = new Circle({x:100,y:100}, 25);
-            cs.draw(ctx);
-
             return new Draw(canvas,modeselect as HTMLSelectElement, fi as HTMLInputElement);
         }
     }
