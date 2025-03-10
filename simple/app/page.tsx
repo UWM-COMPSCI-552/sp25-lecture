@@ -1,14 +1,15 @@
 'use client';
 
 import { Draw } from '@/src/draw'
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 
 export default function Page() {
+  const canvasRef = useRef<HTMLCanvasElement|null>(null);
   const [draw, setDraw] = useState<Draw|null>(null);
   useEffect(() => {
     console.log('draw is running!');
-    const canvas = document.getElementById('drawcanvas');
+    const canvas = canvasRef.current;
     const modeselect = document.getElementById('selectmode');
     const fi = document.getElementById('drawfilename');
     if (canvas instanceof HTMLCanvasElement) {
@@ -30,7 +31,7 @@ export default function Page() {
     <option value="Rectangle">Rectangle</option>
     <option value="Circle">Circle</option>
     </select><br/>
-    <canvas id='drawcanvas' width="300" height ="200">
+    <canvas ref={canvasRef} width="300" height ="200">
     </canvas>
     <br/>
     <input id="drawfilename" type="text"></input>
