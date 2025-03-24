@@ -129,7 +129,6 @@ const circleCreate = (pt1: Point, pt2: Point) => {
 
 class Draw {
     drawing : Drawing;
-    private modeSelect : HTMLSelectElement;
     filenameInput : HTMLInputElement;
     private ctx : CanvasRenderingContext2D;
 
@@ -137,7 +136,6 @@ class Draw {
 
     constructor(canvas : HTMLCanvasElement, modeSelect : HTMLSelectElement, filenameInput : HTMLInputElement) {
         this.drawing = makeDrawing();
-        this.modeSelect = modeSelect;
         this.filenameInput = filenameInput;
         this.ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
@@ -182,7 +180,7 @@ class Draw {
           // the modeis changed
           console.log('mode changed');
           
-          switch (this.modeSelect.value) {
+          switch (modeSelect.value) {
               case "Rectangle":
                   setMode(rectangleMode);
                   break;
