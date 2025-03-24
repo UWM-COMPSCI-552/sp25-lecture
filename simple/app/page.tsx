@@ -134,7 +134,6 @@ class Draw {
     filenameInput : HTMLInputElement;
     private ctx : CanvasRenderingContext2D;
 
-    private readonly selectMode : SelectMode;
     private readonly rectangleMode : CreateMode;
     private readonly circleMode : CreateMode; 
     
@@ -146,10 +145,11 @@ class Draw {
         this.filenameInput = filenameInput;
         this.ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
-        this.selectMode = new SelectMode(this.drawing, this.ctx);
+        const selectMode = new SelectMode(this.drawing, this.ctx);
+
         this.rectangleMode = new CreateMode(this.drawing, this.ctx, (p1,p2) => new Rectangle(p1,p2));
         this.circleMode = new CreateMode(this.drawing, this.ctx, circleCreate);
-        let mode : Mode = this.selectMode;
+        let mode : Mode = selectMode;
         function setMode(newMode: Mode) {
             mode = newMode;
         }
@@ -196,7 +196,7 @@ class Draw {
                   setMode(this.circleMode);
                   break;
               case "Select":
-                  setMode(this.selectMode);
+                  setMode(selectMode);
                   break;
           }
           

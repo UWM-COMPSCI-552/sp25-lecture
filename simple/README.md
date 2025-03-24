@@ -27,3 +27,7 @@ converted into a global.
 
 Once the class has no methods, we can inline mutable fields as
 let variables.
+
+### Convert readonly field to `const` in constructor
+
+Like the last one but `const`.
