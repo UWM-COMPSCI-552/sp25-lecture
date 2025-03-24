@@ -147,6 +147,12 @@ class Draw {
         this.circleMode = new CreateMode(this.drawing, this.ctx, this.circleCreate);
         this.mode = this.selectMode;
         
+        const mouseMove = (e : MouseEvent) : void => {
+            if (e.buttons === 1) {
+                // drag!
+                this.mode.mouseDrag(this.offsetPt(e));
+            }
+        }
         const repaint = () => {
             this.ctx.strokeStyle = 'black';
             this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
@@ -161,7 +167,7 @@ class Draw {
         this.drawing.addObserver(() => { this.repaint(); });
         canvas.addEventListener('mousedown', (e) => this.mouseDown(e));
         canvas.addEventListener('mouseup', (e) => this.mouseUp(e));
-        canvas.addEventListener('mousemove', (e) => this.mouseMove(e));
+        canvas.addEventListener('mousemove', (e) => mouseMove(e));
         const modeChangefunction = () => {
           // the modeis changed
           console.log('mode changed');
@@ -197,12 +203,6 @@ class Draw {
     }
 
 
-    private mouseMove(e : MouseEvent) : void {
-        if (e.buttons === 1) {
-            // drag!
-            this.mode.mouseDrag(this.offsetPt(e));
-        }
-    }
 
     public readonly repaint : () => void; 
 
