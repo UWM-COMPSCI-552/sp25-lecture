@@ -130,7 +130,7 @@ const circleCreate = (pt1: Point, pt2: Point) => {
 class Draw {
     
 
-    constructor(canvas : HTMLCanvasElement, modeSelect : HTMLSelectElement, filenameInput : HTMLInputElement) {
+    constructor(canvas : HTMLCanvasElement, modeSelect : HTMLSelectElement) {
         const drawing = makeDrawing();
         const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
@@ -217,7 +217,7 @@ export default function Page() {
         console.log('cts =',ctx);
         console.log('fi =', fi);
         if (ctx != null) {
-            setDraw(new Draw(canvas,modeselect as HTMLSelectElement, fi as HTMLInputElement));
+            setDraw(new Draw(canvas,modeselect as HTMLSelectElement));
         }
     }
 
