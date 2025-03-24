@@ -121,6 +121,12 @@ function offsetPt(e : MouseEvent) : Point {
     return {x: e.offsetX, y:e.offsetY};
 }
 
+const circleCreate = (pt1: Point, pt2: Point) => {
+    const radius = EuclideanVector2D.fromPoints(pt1, pt2).magnitude;
+    return new Circle(pt1, radius);
+};
+
+
 class Draw {
     drawing : Drawing;
     private canvas : HTMLCanvasElement;
@@ -134,12 +140,7 @@ class Draw {
     
     private mode : Mode;
 
-    private readonly circleCreate = (pt1: Point, pt2: Point) => {
-        const radius = EuclideanVector2D.fromPoints(pt1, pt2).magnitude;
-        return new Circle(pt1, radius);
-    };
-
-     constructor(canvas : HTMLCanvasElement, modeSelect : HTMLSelectElement, filenameInput : HTMLInputElement) {
+    constructor(canvas : HTMLCanvasElement, modeSelect : HTMLSelectElement, filenameInput : HTMLInputElement) {
         this.drawing = makeDrawing();
         this.canvas = canvas;
         this.modeSelect = modeSelect;
@@ -148,7 +149,7 @@ class Draw {
 
         this.selectMode = new SelectMode(this.drawing, this.ctx);
         this.rectangleMode = new CreateMode(this.drawing, this.ctx, (p1,p2) => new Rectangle(p1,p2));
-        this.circleMode = new CreateMode(this.drawing, this.ctx, this.circleCreate);
+        this.circleMode = new CreateMode(this.drawing, this.ctx, circleCreate);
         this.mode = this.selectMode;
         
         const mouseDown = (e : MouseEvent) : void => {
