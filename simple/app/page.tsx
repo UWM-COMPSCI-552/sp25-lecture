@@ -138,7 +138,6 @@ class Draw {
     private readonly rectangleMode : CreateMode;
     private readonly circleMode : CreateMode; 
     
-    private mode : Mode;
 
     constructor(canvas : HTMLCanvasElement, modeSelect : HTMLSelectElement, filenameInput : HTMLInputElement) {
         this.drawing = makeDrawing();
@@ -150,20 +149,20 @@ class Draw {
         this.selectMode = new SelectMode(this.drawing, this.ctx);
         this.rectangleMode = new CreateMode(this.drawing, this.ctx, (p1,p2) => new Rectangle(p1,p2));
         this.circleMode = new CreateMode(this.drawing, this.ctx, circleCreate);
-        this.mode = this.selectMode;
+        let mode : Mode = this.selectMode;
         
         const mouseDown = (e : MouseEvent) : void => {
             console.log('mouse down', e);
-            this.mode.mouseDown(offsetPt(e));
+            mode.mouseDown(offsetPt(e));
         }
         const mouseUp = (e : MouseEvent) : void => {
-            this.mode.mouseUp(offsetPt(e));
+            mode.mouseUp(offsetPt(e));
         }
 
         const mouseMove = (e : MouseEvent) : void => {
             if (e.buttons === 1) {
                 // drag!
-                this.mode.mouseDrag(offsetPt(e));
+                mode.mouseDrag(offsetPt(e));
             }
         }
         const repaint = () => {
@@ -187,13 +186,13 @@ class Draw {
           
           switch (this.modeSelect.value) {
               case "Rectangle":
-                  this.mode = this.rectangleMode;
+                  mode = this.rectangleMode;
                   break;
               case "Circle":
-                  this.mode = this.circleMode;
+                  mode = this.circleMode;
                   break;
               case "Select":
-                  this.mode = this.selectMode;
+                  mode = this.selectMode;
                   break;
           }
           

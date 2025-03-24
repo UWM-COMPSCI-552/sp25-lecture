@@ -18,7 +18,12 @@ a const functional value in the constructor.  All uses of the method (in the con
 A method that6 doesn't access the instance in any way can be made
 a function at the top-level.  It has no dependency on the class state.
 
-### Convert COnstant Field to Global
+### Convert Constant Field to Global
 
 A readonly field assigned at its declaration not using `this` can be
 converted into a global.
+
+### Convert mutable field to let in constructor
+
+Once the class has no methods, we can inline mutable fields as
+let variables.
