@@ -147,6 +147,10 @@ class Draw {
         this.circleMode = new CreateMode(this.drawing, this.ctx, this.circleCreate);
         this.mode = this.selectMode;
         
+        const mouseDown = (e : MouseEvent) : void => {
+            console.log('mouse down', e);
+            this.mode.mouseDown(this.offsetPt(e));
+        }
         const mouseUp = (e : MouseEvent) : void => {
             this.mode.mouseUp(this.offsetPt(e));
         }
@@ -169,7 +173,7 @@ class Draw {
         console.log('adding listeners');
 
         this.drawing.addObserver(() => { this.repaint(); });
-        canvas.addEventListener('mousedown', (e) => this.mouseDown(e));
+        canvas.addEventListener('mousedown', (e) => mouseDown(e));
         canvas.addEventListener('mouseup', (e) => mouseUp(e));
         canvas.addEventListener('mousemove', (e) => mouseMove(e));
         const modeChangefunction = () => {
@@ -195,13 +199,6 @@ class Draw {
     offsetPt(e : MouseEvent) : Point {
         return {x: e.offsetX, y:e.offsetY};
     }
-
-
-    private mouseDown(e : MouseEvent) : void {
-        console.log('mouse down', e);
-        this.mode.mouseDown(this.offsetPt(e));
-    }
-
 
 
     public readonly repaint : () => void; 
