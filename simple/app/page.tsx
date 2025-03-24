@@ -128,8 +128,8 @@ const circleCreate = (pt1: Point, pt2: Point) => {
 
 
 class Draw {
-    drawing : Drawing;
-    filenameInput : HTMLInputElement;
+    private drawing : Drawing;
+    private filenameInput : HTMLInputElement;
 
     
 
@@ -227,11 +227,13 @@ export default function Page() {
 
   },[]);
   function doSave(): void {
+    /*
     const d = draw as Draw;
     const filename = d.filenameInput.value;
     console.log('filename = ', filename);
     const json = JSON.stringify(d.drawing);
     console.log('json =', json);
+    */
   }
   return (
     <div><h2>The Canvas</h2>
