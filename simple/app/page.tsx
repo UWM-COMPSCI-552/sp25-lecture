@@ -128,17 +128,15 @@ const circleCreate = (pt1: Point, pt2: Point) => {
 
 
 class Draw {
-    private drawing : Drawing;
-
     
 
     constructor(canvas : HTMLCanvasElement, modeSelect : HTMLSelectElement, filenameInput : HTMLInputElement) {
-        this.drawing = makeDrawing();
+        const drawing = makeDrawing();
         const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
-        const selectMode = new SelectMode(this.drawing, ctx);
-        const rectangleMode = new CreateMode(this.drawing, ctx, (p1,p2) => new Rectangle(p1,p2));
-        const circleMode = new CreateMode(this.drawing, ctx, circleCreate);
+        const selectMode = new SelectMode(drawing, ctx);
+        const rectangleMode = new CreateMode(drawing, ctx, (p1,p2) => new Rectangle(p1,p2));
+        const circleMode = new CreateMode(drawing, ctx, circleCreate);
 
         let mode : Mode = selectMode;
         function setMode(newMode: Mode) {
@@ -162,7 +160,7 @@ class Draw {
         const repaint = () => {
             ctx.strokeStyle = 'black';
             ctx.clearRect(0,0,canvas.width,canvas.height);
-            for (const s of this.drawing) {
+            for (const s of drawing) {
                 s.draw(ctx);
             }
         };
@@ -170,7 +168,7 @@ class Draw {
 
         console.log('adding listeners');
 
-        this.drawing.addObserver(() => { this.repaint(); });
+        drawing.addObserver(() => { this.repaint(); });
         canvas.addEventListener('mousedown', (e) => mouseDown(e));
         canvas.addEventListener('mouseup', (e) => mouseUp(e));
         canvas.addEventListener('mousemove', (e) => mouseMove(e));
