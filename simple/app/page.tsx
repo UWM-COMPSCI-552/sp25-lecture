@@ -203,9 +203,6 @@ class Draw {
 
     public readonly repaint : () => void; 
 
-    public load() {
-
-    }
 }
 
 
