@@ -177,7 +177,6 @@ class Draw {
         return {x: e.offsetX, y:e.offsetY};
     }
 
-    private current : Point | undefined;
 
     private mouseDown(e : MouseEvent) : void {
         console.log('mouse down', e);
