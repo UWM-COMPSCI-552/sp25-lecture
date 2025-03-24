@@ -117,6 +117,10 @@ class SelectMode implements Mode {
     }
 }
 
+function offsetPt(e : MouseEvent) : Point {
+    return {x: e.offsetX, y:e.offsetY};
+}
+
 class Draw {
     drawing : Drawing;
     private canvas : HTMLCanvasElement;
@@ -149,16 +153,16 @@ class Draw {
         
         const mouseDown = (e : MouseEvent) : void => {
             console.log('mouse down', e);
-            this.mode.mouseDown(this.offsetPt(e));
+            this.mode.mouseDown(offsetPt(e));
         }
         const mouseUp = (e : MouseEvent) : void => {
-            this.mode.mouseUp(this.offsetPt(e));
+            this.mode.mouseUp(offsetPt(e));
         }
 
         const mouseMove = (e : MouseEvent) : void => {
             if (e.buttons === 1) {
                 // drag!
-                this.mode.mouseDrag(this.offsetPt(e));
+                this.mode.mouseDrag(offsetPt(e));
             }
         }
         const repaint = () => {
@@ -194,10 +198,6 @@ class Draw {
           
       };
         modeSelect.addEventListener('change', modeChangefunction);
-    }
-
-    offsetPt(e : MouseEvent) : Point {
-        return {x: e.offsetX, y:e.offsetY};
     }
 
 

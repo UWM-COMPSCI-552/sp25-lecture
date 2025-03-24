@@ -12,3 +12,8 @@ the function value of the method.
 
 A private method used only in the constructor is converted into
 a const functional value in the constructor.  All uses of the method (in the constructor) are changed to use this const.  So `this.privateMethod(args)` becomes `privateMethod(args)`.
+
+### Convert Private Method to Module Function
+
+A method that6 doesn't access the instance in any way can be made
+a function at the top-level.  It has no dependency on the class state.
