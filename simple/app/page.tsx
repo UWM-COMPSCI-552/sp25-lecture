@@ -130,18 +130,18 @@ const circleCreate = (pt1: Point, pt2: Point) => {
 class Draw {
     drawing : Drawing;
     filenameInput : HTMLInputElement;
-    private ctx : CanvasRenderingContext2D;
 
     
 
     constructor(canvas : HTMLCanvasElement, modeSelect : HTMLSelectElement, filenameInput : HTMLInputElement) {
         this.drawing = makeDrawing();
         this.filenameInput = filenameInput;
-        this.ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
-        const selectMode = new SelectMode(this.drawing, this.ctx);
-        const rectangleMode = new CreateMode(this.drawing, this.ctx, (p1,p2) => new Rectangle(p1,p2));
-        const circleMode = new CreateMode(this.drawing, this.ctx, circleCreate);
+        const selectMode = new SelectMode(this.drawing, ctx);
+        const rectangleMode = new CreateMode(this.drawing, ctx, (p1,p2) => new Rectangle(p1,p2));
+        const circleMode = new CreateMode(this.drawing, ctx, circleCreate);
+
         let mode : Mode = selectMode;
         function setMode(newMode: Mode) {
             mode = newMode;
@@ -162,10 +162,10 @@ class Draw {
             }
         }
         const repaint = () => {
-            this.ctx.strokeStyle = 'black';
-            this.ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.strokeStyle = 'black';
+            ctx.clearRect(0,0,canvas.width,canvas.height);
             for (const s of this.drawing) {
-                s.draw(this.ctx);
+                s.draw(ctx);
             }
         };
         this.repaint = repaint;
