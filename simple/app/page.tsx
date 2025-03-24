@@ -129,7 +129,6 @@ const circleCreate = (pt1: Point, pt2: Point) => {
 
 class Draw {
     drawing : Drawing;
-    private canvas : HTMLCanvasElement;
     private modeSelect : HTMLSelectElement;
     filenameInput : HTMLInputElement;
     private ctx : CanvasRenderingContext2D;
@@ -138,7 +137,6 @@ class Draw {
 
     constructor(canvas : HTMLCanvasElement, modeSelect : HTMLSelectElement, filenameInput : HTMLInputElement) {
         this.drawing = makeDrawing();
-        this.canvas = canvas;
         this.modeSelect = modeSelect;
         this.filenameInput = filenameInput;
         this.ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -167,7 +165,7 @@ class Draw {
         }
         const repaint = () => {
             this.ctx.strokeStyle = 'black';
-            this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
+            this.ctx.clearRect(0,0,canvas.width,canvas.height);
             for (const s of this.drawing) {
                 s.draw(this.ctx);
             }
