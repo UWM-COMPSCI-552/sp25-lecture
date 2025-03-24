@@ -147,6 +147,15 @@ class Draw {
         this.circleMode = new CreateMode(this.drawing, this.ctx, this.circleCreate);
         this.mode = this.selectMode;
         
+        const repaint = () => {
+            this.ctx.strokeStyle = 'black';
+            this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
+            for (const s of this.drawing) {
+                s.draw(this.ctx);
+            }
+        };
+        this.repaint = repaint;
+
         console.log('adding listeners');
 
         this.drawing.addObserver(() => { this.repaint(); });
@@ -195,13 +204,7 @@ class Draw {
         }
     }
 
-    public repaint() {
-        this.ctx.strokeStyle = 'black';
-        this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
-        for (const s of this.drawing) {
-            s.draw(this.ctx);
-        }
-    }
+    public readonly repaint : () => void; 
 
     public load() {
 
