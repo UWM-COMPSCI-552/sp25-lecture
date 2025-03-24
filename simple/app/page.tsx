@@ -186,7 +186,8 @@ class Draw {
           
           switch (this.modeSelect.value) {
               case "Rectangle":
-                  mode = this.rectangleMode;
+                  const newMode = this.rectangleMode;
+                  mode = newMode;
                   break;
               case "Circle":
                   mode = this.circleMode;
