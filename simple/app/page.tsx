@@ -150,7 +150,10 @@ class Draw {
         this.rectangleMode = new CreateMode(this.drawing, this.ctx, (p1,p2) => new Rectangle(p1,p2));
         this.circleMode = new CreateMode(this.drawing, this.ctx, circleCreate);
         let mode : Mode = this.selectMode;
-        
+        function setMode(newMode: Mode) {
+            mode = newMode;
+        }
+
         const mouseDown = (e : MouseEvent) : void => {
             console.log('mouse down', e);
             mode.mouseDown(offsetPt(e));
@@ -200,9 +203,6 @@ class Draw {
       };
         modeSelect.addEventListener('change', modeChangefunction);
 
-        function setMode(newMode: Mode) {
-            mode = newMode;
-        }
     }
 
 
