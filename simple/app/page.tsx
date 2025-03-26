@@ -315,7 +315,7 @@ export default function Page() {
         <option value="Rectangle">Rectangle</option>
         <option value="Circle">Circle</option>
         </select><br/>
-        <canvas ref={canvasRef} width="300" height ="200">
+        <canvas ref={canvasRef} width="300" height ="200" style={{border:"2px solid black"}}>
         </canvas>
         <br/>
         <input ref={fiRef} type="text"></input>
