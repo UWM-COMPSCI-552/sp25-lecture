@@ -7,6 +7,7 @@ import { EuclideanVector2D } from "@/src/EuclideanVector";
 import { Point } from "@/src/Point";
 import { Rectangle } from "@/src/Rectangle";
 import { Shape } from "@/src/Shape";
+import { Button, Select, createListCollection } from '@chakra-ui/react';
 
 //import { writeFile } from 'node:fs'; 
 
@@ -207,7 +208,40 @@ class Draw {
 
 console.log('loaded');
 
+const modeSelectComponents = createListCollection({
+    items: [
+    { value: 'Select', label: "Select"},
+    { value: "Rectangle", label: "Rectangle"},
+    { value: "Circle", label: 'Circle'},
+    ],
+});
+
+function computeDrawCanvasWidth(iw : number) {
+    return iw - 10;
+}
+const VERTICAL_CANVAS_PADDING = 350; // space for all the tools
+function computeDrawCanvasHeight(ih : number) {
+    return ih - VERTICAL_CANVAS_PADDING;
+}
+
 export default function Page() {
+    const [canvasWidth, setCanvasWidth] = useState(computeDrawCanvasWidth(window.innerWidth));
+    const [canvasHeight, setCanvasHeight] = useState(computeDrawCanvasHeight(window.innerHeight));
+
+    useEffect(() => {
+        function resizeCanvas() {
+            console.log('window change', window.innerWidth, window.innerHeight);
+            setCanvasWidth(computeDrawCanvasWidth(window.innerWidth));
+            setCanvasHeight(computeDrawCanvasHeight(window.innerHeight));
+        }
+        console.log('adding window listeners', window.innerWidth, window.innerHeight);
+        window.addEventListener('resize', resizeCanvas);
+        return () => {
+            console.log('removing window listeners');
+            window.removeEventListener('resize', resizeCanvas);
+        }
+    },[]);
+
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const modeSelectRef = useRef<HTMLSelectElement>(null);
     const fiRef = useRef<HTMLInputElement>(null);
@@ -309,17 +343,33 @@ export default function Page() {
     }
     return (
         <div><h2>The Canvas</h2>
-        <label htmlFor="selectmode">Choose a tool:</label>
-        <select id="selectmode" ref={modeSelectRef}>
-        <option value="Select">Select</option>
-        <option value="Rectangle">Rectangle</option>
-        <option value="Circle">Circle</option>
-        </select><br/>
-        <canvas ref={canvasRef} width="300" height ="200" style={{border:"2px solid black"}}>
+        <Select.Root collection={modeSelectComponents}>
+            <Select.HiddenSelect ref={modeSelectRef}/>
+            <Select.Label>
+            Choose a tool:
+            </Select.Label>
+            <Select.Control>
+                <Select.Trigger>
+                    <Select.ValueText placeholder="Select Tool" />
+                </Select.Trigger>
+            </Select.Control>
+            <Select.Positioner>
+                <Select.Content>
+                {modeSelectComponents.items.map((mode) => (
+                    <Select.Item item={mode} key={mode.value}>
+                        {mode.label}
+                        <Select.ItemIndicator />
+                    </Select.Item>
+                ))}
+                </Select.Content>
+            </Select.Positioner>
+        </Select.Root>
+        <br/>
+        <canvas ref={canvasRef} width={canvasWidth} height ={canvasHeight} style={{border:"2px solid black"}}>
         </canvas>
         <br/>
         <input ref={fiRef} type="text"></input>
-        <button onClick={(_e) => doSave()}>Save</button></div>
+        <Button variant="outline" onClick={() => doSave()}>Save</Button></div>
     );
     
     
