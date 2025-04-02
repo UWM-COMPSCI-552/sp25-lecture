@@ -71,16 +71,23 @@ class CreateMode implements Mode {
     }
     
     mouseDrag(pt2 : Point) : void {
-        const r = this.func(this.current as Point, pt2);
-        this.ctx.strokeStyle = 'blue';
-        r.draw(this.ctx);
-        
+        const pt1 = this.current as Point;
+        if (pt1.x !== pt2.x || pt1.y !== pt2.y) {
+            const r = this.func(pt1, pt2);
+            this.ctx.strokeStyle = 'magenta'; // has no effect
+            r.draw(this.ctx);
+        }
     }
     
     mouseUp(pt2 : Point) : void {
         const pt1 = this.current as Point;
-        const r = this.func(pt1, pt2);
-        this.drawing.add(r);
+        if (pt1.x !== pt2.x || pt1.y !== pt2.y) {
+            console.log('pt1',pt1,'pt2', pt2);
+            const r = this.func(pt1, pt2);
+            this.drawing.add(r);
+        } else {
+            this.drawing.notifyObservers();
+        }
     }
 }
 
@@ -230,14 +237,14 @@ export default function Page() {
 
     useEffect(() => {
         function resizeCanvas() {
-            console.log('window change', window.innerWidth, window.innerHeight);
+            // console.log('window change', window.innerWidth, window.innerHeight);
             setCanvasWidth(computeDrawCanvasWidth(window.innerWidth));
             setCanvasHeight(computeDrawCanvasHeight(window.innerHeight));
         }
-        console.log('adding window listeners', window.innerWidth, window.innerHeight);
+        // console.log('adding window listeners', window.innerWidth, window.innerHeight);
         window.addEventListener('resize', resizeCanvas);
         return () => {
-            console.log('removing window listeners');
+            // console.log('removing window listeners');
             window.removeEventListener('resize', resizeCanvas);
         }
     },[]);
@@ -303,7 +310,7 @@ export default function Page() {
         return () => {
             drawing.removeObserver(repaint);
         }
-    }, [canvas, ctx, drawing]);
+    }, [canvas, ctx, drawing, canvasHeight, canvasWidth]);
     
     useEffect(() => {
         const modeSelect = modeSelectRef.current;
