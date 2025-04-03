@@ -32,7 +32,7 @@ class Drawing implements Iterable<Shape> {
         this.observers.splice(index,1);
     }
     
-    [Symbol.iterator](): Iterator<Shape, any, any> {
+    [Symbol.iterator](): Iterator<Shape> {
         return this.contents[Symbol.iterator]();
     }
     
@@ -126,7 +126,7 @@ class SelectMode implements Mode {
             this.selection.draw(this.ctx);
         }
     }
-    mouseUp(p: Point): void {
+    mouseUp(_: Point): void {
         this.drawing.notifyObservers();
     }
 }
@@ -141,79 +141,6 @@ const circleCreate = (pt1: Point, pt2: Point) => {
 };
 
 
-class Draw {
-    
-    
-    constructor(canvas : HTMLCanvasElement, modeSelect : HTMLSelectElement) {
-        const drawing = makeDrawing();
-        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-        
-        const selectMode = new SelectMode(drawing, ctx);
-        const rectangleMode = new CreateMode(drawing, ctx, (p1,p2) => new Rectangle(p1,p2));
-        const circleMode = new CreateMode(drawing, ctx, circleCreate);
-        
-        let mode : Mode = selectMode;
-        function setMode(newMode: Mode) {
-            mode = newMode;
-        }
-        
-        const mouseDown = (e : MouseEvent) : void => {
-            console.log('mouse down', e);
-            mode.mouseDown(offsetPt(e));
-        }
-        const mouseUp = (e : MouseEvent) : void => {
-            mode.mouseUp(offsetPt(e));
-        }
-        
-        const mouseMove = (e : MouseEvent) : void => {
-            if (e.buttons === 1) {
-                // drag!
-                mode.mouseDrag(offsetPt(e));
-            }
-        }
-        const repaint = () => {
-            ctx.strokeStyle = 'black';
-            ctx.clearRect(0,0,canvas.width,canvas.height);
-            for (const s of drawing) {
-                s.draw(ctx);
-            }
-        };
-        this.repaint = repaint;
-        
-        console.log('adding listeners');
-        
-        drawing.addObserver(() => { this.repaint(); });
-        canvas.addEventListener('mousedown', (e) => mouseDown(e));
-        canvas.addEventListener('mouseup', (e) => mouseUp(e));
-        canvas.addEventListener('mousemove', (e) => mouseMove(e));
-        const modeChangefunction = () => {
-            // the modeis changed
-            console.log('mode changed');
-            
-            switch (modeSelect.value) {
-                case "Rectangle":
-                setMode(rectangleMode);
-                break;
-                case "Circle":
-                setMode(circleMode);
-                break;
-                case "Select":
-                setMode(selectMode);
-                break;
-            }
-            
-        };
-        modeSelect.addEventListener('change', modeChangefunction);
-        
-    }
-    
-    
-    public readonly repaint : () => void; 
-    
-}
-
-
-console.log('loaded');
 
 const modeSelectComponents = createListCollection({
     items: [
@@ -253,7 +180,7 @@ export default function Page() {
     const modeSelectRef = useRef<HTMLSelectElement>(null);
     const fiRef = useRef<HTMLInputElement>(null);
     
-    const [drawing,_] = useState(makeDrawing());
+    const [drawing] = useState(makeDrawing());
     
     const [canvas, setCanvas] = useState<HTMLCanvasElement|null>(null);
     useEffect(() => {
@@ -333,7 +260,7 @@ export default function Page() {
             
         };
         modeSelect.addEventListener('change', modeChangeFunction);
-        () => {
+        return () => {
             modeSelect.removeEventListener('change', modeChangeFunction);
         }
     },[modeSelectRef, rectangleMode, selectMode, circleMode]);

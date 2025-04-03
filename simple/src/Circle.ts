@@ -23,7 +23,7 @@ export class Circle extends Shape {
     }
 
     override toJSON() : { center : Point, radius ?: number } {
-        let result : { center : Point, radius ?: number} = super.toJSON();
+        const result : { center : Point, radius ?: number} = super.toJSON();
         result.radius = this.radius;
         return result;
     }

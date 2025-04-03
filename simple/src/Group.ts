@@ -11,7 +11,7 @@ export class Group extends Shape implements Iterable<Shape> {
         if (n === 0) return {x:0, y:0};
         let sx = 0;
         let sy = 0;
-        for (let e of elements) {
+        for (const e of elements) {
             sx += e.center.x;
             sy += e.center.y;
         }
@@ -41,14 +41,14 @@ export class Group extends Shape implements Iterable<Shape> {
 
     override move(v : Vector2D) {
         super.move(v);
-        for (let s of this.elements) {
+        for (const s of this.elements) {
             s.move(v);
         }
     }
 
     override scale(amt : number) {
         super.scale(amt);
-        for (let s of this.elements) {
+        for (const s of this.elements) {
             const orig = EuclideanVector2D.fromPoints(this.center, s.center);
             s.scale(amt);
             s.move(orig.scale(amt-1));
@@ -56,7 +56,7 @@ export class Group extends Shape implements Iterable<Shape> {
     }
 
     override draw(ctx: CanvasRenderingContext2D): void {
-        for (let s of this.elements) {
+        for (const s of this.elements) {
             s.draw(ctx);
         }
     }
