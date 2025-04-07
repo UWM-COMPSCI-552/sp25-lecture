@@ -94,7 +94,7 @@ class CreateMode implements Mode {
 class SelectMode implements Mode {
     private drawing : Drawing;
     private ctx : CanvasRenderingContext2D;
-    private selection : Shape | undefined;
+    private selection : Shape[] = [];
     
     constructor(drawing : Drawing, ctx : CanvasRenderingContext2D) {
         this.drawing = drawing;
@@ -115,15 +115,15 @@ class SelectMode implements Mode {
             hit.draw(this.ctx);
             this.current = p;
         }
-        this.selection = hit;
+        this.selection = hit ? [hit] : [];
     }
     mouseDrag(p: Point): void {
         if (this.selection && this.current) {
             const v = EuclideanVector2D.fromPoints(this.current,p);
             console.log('moved:',v);
-            this.selection.move(v);
+            this.selection.map((sh) => sh.move(v));
             this.current = p;
-            this.selection.draw(this.ctx);
+            this.selection.map((sh) => sh.draw(this.ctx));
         }
     }
     mouseUp(_: Point): void {
