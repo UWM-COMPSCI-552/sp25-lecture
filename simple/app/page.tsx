@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 import { Circle } from "@/src/Circle";
 import { EuclideanVector2D } from "@/src/EuclideanVector";
@@ -150,6 +150,9 @@ const modeSelectComponents = createListCollection({
     ],
 });
 
+const INITIAL_CANVAS_WIDTH = 500;
+const INITIAL_CANVAS_HEIGHT = 300;
+
 function computeDrawCanvasWidth(iw : number) {
     return iw - 10;
 }
@@ -159,10 +162,10 @@ function computeDrawCanvasHeight(ih : number) {
 }
 
 export default function Page() {
-    const [canvasWidth, setCanvasWidth] = useState(computeDrawCanvasWidth(window.innerWidth));
-    const [canvasHeight, setCanvasHeight] = useState(computeDrawCanvasHeight(window.innerHeight));
+    const [canvasWidth, setCanvasWidth] = useState(INITIAL_CANVAS_WIDTH);
+    const [canvasHeight, setCanvasHeight] = useState(INITIAL_CANVAS_HEIGHT);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         function resizeCanvas() {
             // console.log('window change', window.innerWidth, window.innerHeight);
             setCanvasWidth(computeDrawCanvasWidth(window.innerWidth));
@@ -170,6 +173,7 @@ export default function Page() {
         }
         // console.log('adding window listeners', window.innerWidth, window.innerHeight);
         window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
         return () => {
             // console.log('removing window listeners');
             window.removeEventListener('resize', resizeCanvas);
@@ -266,7 +270,9 @@ export default function Page() {
     },[modeSelectRef, rectangleMode, selectMode, circleMode]);
     
     
-    function doSave(): void {
+    const doSave = useCallback(() => {
+        const json = JSON.stringify(drawing);
+        console.log('not saving ', json);
         /*
         const d = draw as Draw;
         const filename = d.filenameInput.value;
@@ -274,7 +280,8 @@ export default function Page() {
         const json = JSON.stringify(d.drawing);
         console.log('json =', json);
         */
-    }
+    },[drawing]);
+    
     return (
         <div><h2>The Canvas</h2>
         <Select.Root collection={modeSelectComponents}>
@@ -303,7 +310,7 @@ export default function Page() {
         </canvas>
         <br/>
         <input ref={fiRef} type="text"></input>
-        <Button variant="outline" onClick={() => doSave()}>Save</Button></div>
+        <Button variant="outline" onClick={doSave}>Save</Button></div>
     );
     
     
