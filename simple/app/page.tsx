@@ -91,14 +91,68 @@ class CreateMode implements Mode {
     }
 }
 
+type SelectionObserver = (s:Selection) => void;
+
+class Selection {
+    private contents : Shape[] = [];
+    private observers : SelectionObserver[] = [];
+
+    public setSelection(newContents : Shape[]) : void {
+        this.contents = [...newContents];
+        this.notifyObservers();
+    }
+
+    public isSelected(sh : Shape) : boolean {
+        return this.contents.includes(sh);
+    }
+
+    public addSelection(sh : Shape) : void {
+        if (!this.isSelected(sh)) {
+            this.contents.push(sh);
+            this.notifyObservers();
+        }
+    }
+
+    public toggleSelection(sh : Shape) : void {
+        if (this.isSelected(sh)) {
+            this.contents.splice(this.contents.indexOf(sh), 1);
+        } else {
+            this.contents.push(sh);
+        }
+        this.notifyObservers();
+    }
+
+    public addObserver(obs : SelectionObserver) {
+        this.observers.push(obs);
+    }
+    
+    public removeObserver(obs : SelectionObserver) {
+        const index = this.observers.findIndex((v) => v === obs);
+        if (index === -1) return;
+        this.observers.splice(index,1);
+    }
+    
+    [Symbol.iterator](): Iterator<Shape> {
+        return this.contents[Symbol.iterator]();
+    }
+    
+    public notifyObservers() {
+        for (const obs of this.observers) {
+            obs(this);
+        }
+    }
+
+}
+
 class SelectMode implements Mode {
     private drawing : Drawing;
     private ctx : CanvasRenderingContext2D;
-    private selection : Shape[] = [];
+    private selection : Selection;
     
     constructor(drawing : Drawing, ctx : CanvasRenderingContext2D) {
         this.drawing = drawing;
         this.ctx = ctx;
+        this.selection = new Selection();
     }
     
     private current : Point | undefined;
@@ -110,20 +164,24 @@ class SelectMode implements Mode {
                 hit = sh;
             }
         }
+        const newSelection = [];
         if (hit !== undefined) {
             this.ctx.strokeStyle = 'magenta';
             hit.draw(this.ctx);
             this.current = p;
+            newSelection.push(hit);
         }
-        this.selection = hit ? [hit] : [];
+        this.selection.setSelection(newSelection);
     }
     mouseDrag(p: Point): void {
         if (this.selection && this.current) {
             const v = EuclideanVector2D.fromPoints(this.current,p);
             console.log('moved:',v);
-            this.selection.map((sh) => sh.move(v));
             this.current = p;
-            this.selection.map((sh) => sh.draw(this.ctx));
+            for (const sh of this.selection) {
+                sh.move(v);
+                sh.draw(this.ctx);
+            }
         }
     }
     mouseUp(_: Point): void {
