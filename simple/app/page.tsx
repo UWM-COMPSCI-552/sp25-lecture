@@ -149,10 +149,10 @@ class SelectMode implements Mode {
     private ctx : CanvasRenderingContext2D;
     private selection : Selection;
     
-    constructor(drawing : Drawing, ctx : CanvasRenderingContext2D) {
+    constructor(drawing : Drawing, ctx : CanvasRenderingContext2D, selection : Selection) {
         this.drawing = drawing;
         this.ctx = ctx;
-        this.selection = new Selection();
+        this.selection = selection;
     }
     
     private current : Point | undefined;
@@ -251,7 +251,7 @@ export default function Page() {
     
     const ctx = canvas?.getContext('2d') as CanvasRenderingContext2D;
     
-    const selectMode = useMemo(() => new SelectMode(drawing, ctx), [drawing, ctx]); // XX should have drawing
+    const selectMode = useMemo(() => new SelectMode(drawing, ctx, new Selection()), [drawing, ctx]); // XX should have drawing
     const rectangleMode = useMemo(() => new CreateMode(drawing, ctx, (p1,p2) => new Rectangle(p1,p2)), [drawing, ctx]);
     const circleMode = useMemo(() => new CreateMode(drawing, ctx, circleCreate), [drawing, ctx]);
     
