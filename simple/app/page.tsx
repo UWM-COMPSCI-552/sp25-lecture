@@ -226,7 +226,7 @@ export default function Page() {
         const repaint = () => {
             if (canvas === null) return;
             ctx.strokeStyle = 'black';
-            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.clearRect(0,0,canvasWidth,canvasHeight);
             for (const s of drawing) {
                 s.draw(ctx);
             }
@@ -237,7 +237,7 @@ export default function Page() {
         return () => {
             drawing.removeObserver(repaint);
         }
-    }, [canvas, ctx, drawing, canvasHeight, canvasWidth]);
+    }, [drawing, canvas, ctx, canvasWidth, canvasHeight]);
     
     useEffect(() => {
         const modeSelect = modeSelectRef.current;
