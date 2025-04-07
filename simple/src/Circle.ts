@@ -15,8 +15,8 @@ export class Circle extends Shape {
         this.radius *= amt;
     }
 
-    override draw(ctx: CanvasRenderingContext2D): void {
-        ctx.strokeStyle = 'black';
+    override draw(ctx: CanvasRenderingContext2D, isSelected ?: boolean): void {
+        ctx.strokeStyle = isSelected ? 'magenta' : 'black';
         ctx.beginPath();
         ctx.arc(this.center.x, this.center.y, this.radius, 0, Math.PI*2);
         ctx.stroke();

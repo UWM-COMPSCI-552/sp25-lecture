@@ -34,7 +34,7 @@ export abstract class Shape {
         if (amt === 0) throw new RangeError("cvannot scale by zero");
     }
 
-    abstract draw(ctx : CanvasRenderingContext2D ) : void;
+    abstract draw(ctx : CanvasRenderingContext2D, isSelected?:boolean ) : void;
 
     toJSON() : { center : Point } {
         return {center : this.center};

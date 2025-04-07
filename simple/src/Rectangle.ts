@@ -29,8 +29,8 @@ export class Rectangle extends Shape {
         this.height *= amt;
     }
 
-    override draw(ctx: CanvasRenderingContext2D): void {
-        ctx.strokeStyle = 'black';
+    override draw(ctx: CanvasRenderingContext2D, isSelected ?: boolean): void {
+        ctx.strokeStyle = isSelected ? 'magenta' : 'black';
         ctx.beginPath();
         ctx.rect(this.center.x-this.width/2, this.center.y-this.height/2, this.width, this.height);
         ctx.stroke();
