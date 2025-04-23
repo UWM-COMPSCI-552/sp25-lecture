@@ -5,7 +5,7 @@
   "main": "build/start.js",
   "type": "module",
   "scripts": {
-    "init": "ncp ../src src/client",
+    "init": "ncp ../simple/src src/client",
     "build": "tsc --project tsconfig.build.json",
     "clean": "tsc --build --clean",
     "test": "jest",

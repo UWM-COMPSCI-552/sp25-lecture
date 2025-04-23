@@ -494,3 +494,30 @@ export class Log {
         // TODO
     }
 }
+
+// TODO: put in own file
+
+import { Socket } from 'socket.io-client';
+import { ClientToServer, ServerToClient } from './network.js';
+
+class ProxyLog {
+    private sock : Socket<ServerToClient, ClientToServer>;
+    private readonly drawing : TerrainMap;
+
+    constructor (sock : Socket<ServerToClient, ClientToServer>) {
+        this.sock = sock;
+    }
+
+    public add(com : Command) {
+        this.sock.emit('request', com);
+    }
+
+    /**
+     * Add a command to the log that is assumed already done.
+     * @param cmd the command to add
+     */
+    public log(com : Command) {
+        com.undo(this.drawing);
+        this.add(com);
+    }
+}
