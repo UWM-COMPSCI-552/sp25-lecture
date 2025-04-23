@@ -8,8 +8,8 @@
 			"path": "examples"
 		},
 		{
-			"name": "next",
-			"path": "next"
+			"name": "server",
+			"path": "server"
 		}
 	],
 	"settings": {}
