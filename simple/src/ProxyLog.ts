@@ -2,7 +2,7 @@
 import { Socket } from 'socket.io-client';
 import { ClientToServer, ServerToClient } from './network.js';
 import { Drawing } from "./Drawing.js";
-import { Command, sequenceCommand, undoCommand, MoveShapeCommand, AddShapeCommand } from "./DrawingCommand.js";
+import { Command, sequenceCommand, undoCommand, MoveShapeCommand, AddShapeCommand, Log } from "./DrawingCommand.js";
 import { Group } from './Group.js';
 import { Shape } from './Shape.js';
 import { Point } from './Point.js';
@@ -79,12 +79,11 @@ export function commandFromJSON(json : object) : Command {
     }
 }
 
-class ProxyLog {
+export class ProxyLog extends Log {
     private sock : Socket<ServerToClient, ClientToServer>;
-    private readonly drawing : Drawing;
 
     constructor (drawing : Drawing, sock : Socket<ServerToClient, ClientToServer>) {
-        this.drawing = drawing;
+        super(drawing);
         this.sock = sock;
     }
 

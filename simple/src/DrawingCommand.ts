@@ -1,3 +1,5 @@
+import { Point } from './Point.js';
+import { Vector2D }from './Vector.js';
 import { Shape } from "./Shape.js";
 import { Drawing } from "./Drawing.js";
 
@@ -231,6 +233,10 @@ export class Log {
         this.policy = policy;
         this.commands = [];
         this.index = 0;
+    }
+
+    get drawing() : Drawing {
+        return this.target;
     }
 
     /**
