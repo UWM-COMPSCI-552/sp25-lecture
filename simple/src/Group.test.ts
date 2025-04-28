@@ -14,4 +14,13 @@ describe('Group tests', () => {
         expect(res.value).toBe(0);
         expect(g.size()).toBe(0);
     });
+
+    test('code to see how JSON works on shapes', () => {
+        const sh = new Rectangle({x:100,y:100}, 40);
+        const g = new Group([sh]);
+        const json = JSON.stringify(g);
+        console.log(json);
+        const g2 = JSON.parse(json);
+        expect(g2).toEqual(g);
+    });
 })
