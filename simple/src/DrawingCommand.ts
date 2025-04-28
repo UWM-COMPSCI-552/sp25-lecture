@@ -1,53 +1,75 @@
-import { TerrainMap } from './TerrainMap';
-import { Terrain } from './Terrain'; // ##
-import { HexCoordinate } from './HexCoordinate'; // ##
+import { Shape } from "./Shape.js";
+import { Drawing } from "./Drawing.js";
 
 /**
- * A command interface for modifying a TerrainMap.
+ * A command interface for modifying a drawing.
  */
 export interface Command {
     /**
-     * Apply this command to the given TerrainMap.
-     * @param map the TerrainMap to modify
+     * Apply this command to the given drawing.
+     * @param container the drawing to modify
      */
-    apply(map: TerrainMap) : void;
+    apply(container : Drawing) : void;
 
     /**
-     * Undo this command on the given TerrainMap.
-     * @param map the TerrainMap to revert the modification
+     * Undo this command on the given drawing.
+     * @param container the drawing to revert the modification
      */
-    undo(map: TerrainMap) : void;
+    undo(container: Drawing) : void;
 }
 
-// #(# \subsection{Command classes}
 /**
- * A command to set the terrain at a given hex coordinate.
- * The command is legal only if the terrain was not previously mapped.
+ * A command to add a shape to the drawing.
+ * This command is legal only if the shape is defined
+ * and is not in the drawing already
  */
-export class AssignTerrainCommand implements Command {
-    private readonly coord: HexCoordinate;
-    private readonly terrain: Terrain;
+export class AddShapeCommand implements Command {
+    private readonly shape : Shape;
 
-    constructor(coord: HexCoordinate, terrain: Terrain) {
-        this.coord = coord;
-        this.terrain = terrain;
+    constructor(shape : Shape) {
+        this.shape = shape;
     }
 
-    apply(map: TerrainMap) : void {
-        if (map.get(this.coord) !== undefined) {
-            throw new Error(`Cannot set terrain for ${this.coord}: terrain already mapped to ${map.get(this.coord)}`);
-        }
-        map.set(this.coord, this.terrain);
+    apply(container : Drawing) {
+        if (container.contains(this.shape)) throw new Error("cannot add again");
+        container.add(this.shape);
     }
 
-    undo(map: TerrainMap) : void {
-        if (map.get(this.coord) !== this.terrain) {
-            throw new Error("Cannot undo change terrain: current terrain does not match terrain");
-        }
-        map.remove(this.coord);
+    undo(container : Drawing) {
+        if (!container.contains(this.shape)) throw new Error("cannot remove if not present");
+        container.remove(this.shape);
+ 
     }
 }
 
+export class MoveShapeCommand implements Command {
+    private readonly shape : Shape;
+    private readonly oldCenter : Point;
+    private readonly amount : Vector2D;
+
+    constructor (shape : Shape, oldCenter : Point, amount : Vector2D) {
+        this.shape = shape;
+        this.oldCenter = oldCenter;
+        this.amount = amount;
+    }
+
+    public apply(container : Drawing) {
+        const current : Point = this.shape.center;
+        if (current.x !== this.oldCenter.x || current.y !== this.oldCenter.y) {
+            throw new Error("invalid: center does not match (" + current.x + "," + current.y + ") != (" + this.oldCenter.x + "," + this.oldCenter.y + ")");
+        }
+        this.shape.move(this.amount);
+    }
+
+    public undo(container : Drawing) {
+        const current : Point = this.shape.center;
+        const newCenter = this.amount.move(this.oldCenter);
+        if (current.x !== newCenter.x || current.y !== newCenter.y) {
+            throw new Error("invalid: center does not match (" + current.x + "," + current.y + ") != (" + newCenter.x + "," + newCenter.y + ")");
+        }
+        this.shape.move(this.amount.scale(-1));
+    }
+}
 /**
  * A command to change the terrain at a given hex coordinate.
  * The command is legal only if the terrain was previously mapped.
@@ -63,14 +85,14 @@ export class ChangeTerrainCommand implements Command {
         this.oldTerrain = oldTerrain;
     }
 
-    apply(map: TerrainMap) : void {
+    apply(container: Drawing) : void {
         if (map.get(this.coord) !== this.oldTerrain) {
             throw new Error("Cannot change terrain: current terrain does not match old terrain");
         }
         map.set(this.coord, this.terrain);
     }
 
-    undo(map: TerrainMap) : void {
+    undo(container: Drawing) : void {
         if (map.get(this.coord) !== this.terrain) {
             throw new Error("Cannot undo change terrain: current terrain does not match terrain");
         }
@@ -86,10 +108,10 @@ export class UndoCommand implements Command {
         this.command = c;
     }
 
-    apply(map: TerrainMap) : void {
+    apply(container: Drawing) : void {
         this.command.undo(map);
     }
-    undo(map: TerrainMap) : void {
+    undo(container: Drawing) : void {
         this.command.apply(map);
     }
 
@@ -111,7 +133,7 @@ export class CompoundCommand implements Command {
         this.commands = [...commands];
     }
 
-    public apply(map: TerrainMap) : void {
+    public apply(container: Drawing) : void {
         let i = 0;
         try {
             while (i < this.commands.length) {
@@ -499,6 +521,8 @@ export class Log {
 
 import { Socket } from 'socket.io-client';
 import { ClientToServer, ServerToClient } from './network.js';
+import { Vector2D } from "./Vector.js";
+import { Point } from "./Point.js";
 
 class ProxyLog {
     private sock : Socket<ServerToClient, ClientToServer>;

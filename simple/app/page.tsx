@@ -7,44 +7,10 @@ import { EuclideanVector2D } from "@/src/EuclideanVector";
 import { Point } from "@/src/Point";
 import { Rectangle } from "@/src/Rectangle";
 import { Shape } from "@/src/Shape";
+import { Drawing, makeDrawing } from "@/src/Drawing";
 import { Button, Select, createListCollection } from '@chakra-ui/react';
 
 //import { writeFile } from 'node:fs'; 
-
-type ShapeObserver = (d:Drawing) => void;
-
-class Drawing implements Iterable<Shape> {
-    private contents : Array<Shape> = [];
-    private observers : Array<ShapeObserver> = [];
-    
-    public add(sh :Shape) {
-        this.contents.push(sh);
-        this.notifyObservers();
-    }
-    
-    public addObserver(obs : ShapeObserver) {
-        this.observers.push(obs);
-    }
-    
-    public removeObserver(obs : ShapeObserver) {
-        const index = this.observers.findIndex((v) => v === obs);
-        if (index === -1) return;
-        this.observers.splice(index,1);
-    }
-    
-    [Symbol.iterator](): Iterator<Shape> {
-        return this.contents[Symbol.iterator]();
-    }
-    
-    public notifyObservers() {
-        for (const obs of this.observers) {
-            obs(this);
-        }
-    }
-}
-
-
-function makeDrawing() : Drawing { return new Drawing(); }
 
 interface Mode {
     mouseDown(p : Point) :  void;
