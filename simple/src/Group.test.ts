@@ -1,5 +1,6 @@
 import { Group } from './Group';
 import { Rectangle } from './Rectangle';
+import { Shape } from './Shape';
 
 describe('Group tests', () => {
     test('remove from a group', () => {
@@ -20,7 +21,7 @@ describe('Group tests', () => {
         const g = new Group([sh]);
         const json = JSON.stringify(g);
         console.log(json);
-        const g2 = JSON.parse(json);
-        expect(g2).toEqual(g);
+        const g2 = Shape.fromJSON(JSON.parse(json));
+        expect(g2).toBe(g);
     });
 })
