@@ -1,7 +1,11 @@
 import { EuclideanVector2D } from "./EuclideanVector";
 import { Point } from "./Point";
-import { Shape } from "./Shape";
+import { Shape, ShapeJSON } from "./Shape";
 import { Vector2D } from "./Vector";
+
+export interface GroupJSON extends ShapeJSON {
+    elements : ShapeJSON[];
+}
 
 export class Group extends Shape implements Iterable<Shape> {
     private elements : Array<Shape>;
@@ -68,4 +72,8 @@ export class Group extends Shape implements Iterable<Shape> {
         return false;
     }
 
+    override toJSON() : GroupJSON {
+        const superj = super.toJSON();
+        return { ...superj,  type: "Group", elements: this.elements.map((sh) => sh.toJSON())};
+    }
 }

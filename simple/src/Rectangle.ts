@@ -1,5 +1,10 @@
 import { Point } from "./Point";
-import { Shape } from "./Shape";
+import { Shape, ShapeJSON } from "./Shape";
+
+export interface RectangleJSON extends ShapeJSON {
+    width : number;
+    height : number;
+}
 
 export class Rectangle extends Shape {
     private width : number;
@@ -48,4 +53,8 @@ export class Rectangle extends Shape {
         return inRange && onEdges;
     }
 
+    override toJSON() : RectangleJSON {
+        const superj = super.toJSON();
+        return {...superj, type: "Rectangle", height: this.height, width : this.width};
+    }
 }

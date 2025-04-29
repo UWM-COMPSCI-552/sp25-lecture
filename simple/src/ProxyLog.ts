@@ -1,6 +1,5 @@
-
 import { Socket } from 'socket.io-client';
-import { ClientToServer, ServerToClient } from './network.js';
+import { ClientToServer, MouseInfo, UserID } from './network.js';
 import { Drawing } from "./Drawing.js";
 import { Command, sequenceCommand, undoCommand, MoveShapeCommand, AddShapeCommand, Log } from "./DrawingCommand.js";
 import { Group } from './Group.js';
@@ -20,8 +19,21 @@ interface RawShape {
     id ?: string;
 }
 
+interface RawCommand {
+    commands ?: unknown, 
+    command ?: unknown, 
+    shape?:unknown, 
+    oldCenter ?:unknown, 
+    amount ?: unknown
+}
 
-export function ShapeFromJSON(json : object) : Shape {
+interface ServerToClient {
+    change ?: (com:RawCommand, user : UserID) => void;
+    response ?: (com : RawCommand, reason : string) => void;
+    pointer ?: (pos:MouseInfo, user:UserID) => void;
+}
+
+export function shapeFromJSON(json : object) : Shape {
     const obj = json as RawShape;
     return new Group([]); // TODO!!!
 }
@@ -33,7 +45,7 @@ export function ShapeFromJSON(json : object) : Shape {
  * @returns a command object
  */
 export function commandFromJSON(json : object) : Command {
-    const obj = json as {commands : unknown, command: unknown, shape?:unknown, oldCenter ?:unknown, amount ?: unknown};
+    const obj = json as RawCommand;
 
     if (obj.commands !== undefined) {
         if (!Array.isArray(obj.commands)) {
@@ -57,7 +69,7 @@ export function commandFromJSON(json : object) : Command {
     if (typeof obj.shape !== 'object' || obj.shape === null) {
         throw new Error("Invalid shape");
     }
-    const sh = ShapeFromJSON(obj.shape);
+    const sh = shapeFromJSON(obj.shape);
     if (obj.oldCenter) {
         if (typeof obj.oldCenter !== 'object' || obj.oldCenter === null) {
             throw new Error("Invalid old center");
@@ -85,6 +97,12 @@ export class ProxyLog extends Log {
     constructor (drawing : Drawing, sock : Socket<ServerToClient, ClientToServer>) {
         super(drawing);
         this.sock = sock;
+        sock.on('change', (rawcom, _user) => {
+            // XXX: Don't call super.add(com)  Why not?  Because super.add calls "log"
+            const com = commandFromJSON(rawcom);
+            com.apply(this.drawing); 
+            super.log(com);
+        });
     }
 
     public add(com : Command) {

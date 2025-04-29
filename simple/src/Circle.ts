@@ -1,6 +1,10 @@
 import { EuclideanVector2D } from "./EuclideanVector";
 import { Point } from "./Point";
-import { Shape } from "./Shape";
+import { Shape, ShapeJSON } from "./Shape";
+
+export interface CircleJSON extends ShapeJSON {
+    radius : number;
+}
 
 export class Circle extends Shape {
     private radius : number;
@@ -22,14 +26,14 @@ export class Circle extends Shape {
         ctx.stroke();
     }
 
-    override toJSON() : { center : Point, radius ?: number } {
-        const result : { center : Point, radius ?: number} = super.toJSON();
-        result.radius = this.radius;
-        return result;
+    override toJSON() : CircleJSON {
+        const superj = super.toJSON();
+        return {...superj, type:"Circle", radius:this.radius};
     }
 
     override isOn(p: Point): boolean {
         const dist = EuclideanVector2D.fromPoints(this.center, p).magnitude;
         return Math.abs(dist - this.radius) < Shape.CLOSE;
     }
+
 }
