@@ -1,15 +1,47 @@
 import { Server as ServerSocket } from 'socket.io';
 import http from 'http';
 import { Drawing } from './client/Drawing.js';
-import { Coordinate, ClientToServerEvents, InterSocketEvents, ServerToClientEvents, SocketData } from './client/network.js';
+import { ServerToClient, MouseInfo, RawCommand, commandFromJSON } from './client/network.js';
+import { Command } from './client/DrawingCommand.js';
+import { nanoid } from 'nanoid';
 
-export function createDrawingServer(webserver : http.Server) : { 
+interface ClientToServer {
+    request ?: (com: RawCommand) => void;
+    pointer ?: (pos:MouseInfo) => void;
+}
+
+export function createDrawServer(webserver : http.Server) : { 
     server : ServerSocket,
 } {
-     const server = new ServerSocket<ClientToServerEvents,ServerToClientEvents,InterSocketEvents,SocketData>(webserver, {cors:{
+    const server = new ServerSocket<ClientToServer,ServerToClient>(webserver, {cors:{
         origin: "*",
         credentials: false
     }});
 
+    const drawing = new Drawing();
+    const log : Command[] = [];
+
+    server.on("connect", (socket) => {
+        const userID = nanoid();
+        socket.emit("identify", userID);
+        for (const cmd of log) {
+            socket.emit("change", cmd, '');
+        };
+        socket.on("request", (json:RawCommand) => {
+            const cmd = commandFromJSON(json);
+            try {
+                cmd.apply(drawing);
+            } catch (error) {
+                socket.emit("response", cmd, error+"");
+                return;
+            }
+            server.emit("change", cmd, userID);
+            log.push(cmd);
+        });
+        socket.on("pointer", (pos) => {
+            server.emit("pointer", pos, userID)
+        });
+    });
+    
     return { server };
 }

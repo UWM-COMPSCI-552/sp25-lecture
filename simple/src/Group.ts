@@ -22,8 +22,8 @@ export class Group extends Shape implements Iterable<Shape> {
         return { x : sx / n, y : sy / n};
     }
 
-    constructor(elements ?: Array<Shape>) {
-        super(Group.computeCenter(elements ?? []));
+    constructor(elements ?: Array<Shape>, id?: string) {
+        super(Group.computeCenter(elements ?? []), id);
         this.elements = elements ?? [];
     }
 
@@ -76,4 +76,17 @@ export class Group extends Shape implements Iterable<Shape> {
         const superj = super.toJSON();
         return { ...superj,  type: "Group", elements: this.elements.map((sh) => sh.toJSON())};
     }
+
+    static {
+        Shape.addFactory("Group", groupFactory);
+    }
 }
+
+function groupFactory(json : ShapeJSON) : Group {
+    const json2 = json as GroupJSON;
+    const elems = json2.elements.map((e) => Shape.fromJSON(e));
+    const result = new Group(elems, json.id);
+    return result;
+}
+
+
