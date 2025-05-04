@@ -14,11 +14,11 @@ export class Rectangle extends Shape {
         return { x : (p1.x + p2.x)/2, y : (p1.y + p2.y) / 2};
     }
 
-    constructor(center : Point, width : number, height : number)
+    constructor(center : Point, width : number, height : number, id?:string)
     constructor(center : Point, size : number) // Square
     constructor(corner1 : Point, corner2 : Point) 
-    constructor(p1 : Point, x : number | Point, y ?: number) {
-        super(typeof x === 'number' ? p1 : Rectangle.midpoint(p1,x));
+    constructor(p1 : Point, x : number | Point, y ?: number, id?:string) {
+        super(typeof x === 'number' ? p1 : Rectangle.midpoint(p1,x), id);
         if (typeof x === 'number') {
             this.width = x;
             this.height = y ?? x;
@@ -56,5 +56,14 @@ export class Rectangle extends Shape {
     override toJSON() : RectangleJSON {
         const superj = super.toJSON();
         return {...superj, type: "Rectangle", height: this.height, width : this.width};
+    }
+
+    static factory(raw : ShapeJSON) : Rectangle {
+        const json = raw as RectangleJSON;
+        return new Rectangle(json.center, json.width, json.height, json.id);
+    }
+
+    static {
+        Shape.addFactory("Rectangle", Rectangle.factory);
     }
 }

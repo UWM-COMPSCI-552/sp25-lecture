@@ -8,8 +8,8 @@ export interface CircleJSON extends ShapeJSON {
 
 export class Circle extends Shape {
     private radius : number;
-    constructor (center : Point, radius : number) {
-        super(center);
+    constructor (center : Point, radius : number, id?:string) {
+        super(center,id);
         if (radius === 0) throw new RangeError("radius cannot be zero");
         this.radius = radius;
     }
@@ -36,4 +36,12 @@ export class Circle extends Shape {
         return Math.abs(dist - this.radius) < Shape.CLOSE;
     }
 
+    static factory(raw : ShapeJSON) : Circle {
+        const json = raw as CircleJSON;
+        return new Circle(json.center, json.radius, json.id);
+    }
+
+    static {
+        Shape.addFactory("Circle", Circle.factory);
+    }
 }
