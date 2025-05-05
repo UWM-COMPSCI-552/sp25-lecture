@@ -1,5 +1,5 @@
-import { Point } from './Point';
-import { AbstractVector, Vector2D } from './Vector';
+import { Point } from './Point.js';
+import { AbstractVector, Vector2D } from './Vector.js';
 
 export class EuclideanVector2D extends AbstractVector {
     readonly dx : number;

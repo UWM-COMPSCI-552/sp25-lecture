@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
-import { EuclideanVector2D } from "./EuclideanVector";
-import { Point } from "./Point";
-import { Vector2D } from "./Vector";
+import { EuclideanVector2D } from "./EuclideanVector.js";
+import { Point } from "./Point.js";
+import { Vector2D } from "./Vector.js";
 
 export interface ShapeJSON {
     type : string;

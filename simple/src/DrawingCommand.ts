@@ -323,6 +323,7 @@ export class Log {
         }
         this.commands.push(cmd);
         this.index = this.commands.length;
+        console.log('added',JSON.stringify(cmd));
         this.notifyObservers();
     }
 

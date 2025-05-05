@@ -9,6 +9,10 @@ import { Rectangle } from "@/src/Rectangle";
 import { Shape } from "@/src/Shape";
 import { Drawing, makeDrawing } from "@/src/Drawing";
 import { Button, Select, createListCollection } from '@chakra-ui/react';
+import { AddShapeCommand, Command, Log, MoveShapeCommand, sequenceCommand } from '@/src/DrawingCommand';
+import { ProxyLog } from '@/src/ProxyLog';
+import { io, Socket } from 'socket.io-client';
+import { PORT } from '@/src/network';
 
 //import { writeFile } from 'node:fs'; 
 
@@ -24,11 +28,13 @@ class CreateMode implements Mode {
     drawing : Drawing;
     ctx : CanvasRenderingContext2D;
     func : CreateFunction;
+    log : Log;
     
-    constructor(drawing : Drawing, ctx : CanvasRenderingContext2D, cfunc : CreateFunction) {
+    constructor(drawing : Drawing, ctx : CanvasRenderingContext2D, cfunc : CreateFunction, log : Log) {
         this.drawing = drawing;
         this.ctx = ctx;
         this.func = cfunc;
+        this.log = log;
     }
     
     current : Point | undefined;
@@ -50,7 +56,8 @@ class CreateMode implements Mode {
         if (pt1.x !== pt2.x || pt1.y !== pt2.y) {
             console.log('pt1',pt1,'pt2', pt2);
             const r = this.func(pt1, pt2);
-            this.drawing.add(r);
+            // this.drawing.add(r);
+            this.log.add(new AddShapeCommand(r));
         } else {
             this.drawing.notifyObservers();
         }
@@ -114,13 +121,16 @@ class SelectMode implements Mode {
     private drawing : Drawing;
     private ctx : CanvasRenderingContext2D;
     private selection : Selection;
+    private log : Log;
     
-    constructor(drawing : Drawing, ctx : CanvasRenderingContext2D, selection : Selection) {
+    constructor(drawing : Drawing, ctx : CanvasRenderingContext2D, selection : Selection, log : Log) {
         this.drawing = drawing;
         this.ctx = ctx;
         this.selection = selection;
+        this.log = log;
     }
     
+    private initial : Point | undefined;
     private current : Point | undefined;
     
     mouseDown(p: Point): void {
@@ -135,6 +145,7 @@ class SelectMode implements Mode {
             this.ctx.strokeStyle = 'magenta';
             hit.draw(this.ctx);
             this.current = p;
+            this.initial = p;
             newSelection.push(hit);
         }
         this.selection.setSelection(newSelection);
@@ -151,6 +162,19 @@ class SelectMode implements Mode {
         }
     }
     mouseUp(_: Point): void {
+        if (this.selection && this.current && this.initial) {
+            const v = EuclideanVector2D.fromPoints(this.initial, this.current);
+            const rev = v.scale(-1);
+            const commands : Command[] = [];
+            for (const sh of this.selection) {
+                const center = sh.center;
+                const oldCenter = rev.move(center);
+                commands.push(new MoveShapeCommand(sh, oldCenter, v));
+            }
+            if (commands.length > 0) {
+                this.log.log(sequenceCommand(commands));
+            }
+        }
         this.drawing.notifyObservers();
     }
 }
@@ -216,14 +240,21 @@ export default function Page() {
     }, [canvasRef]);
     
     const ctx = canvas?.getContext('2d') as CanvasRenderingContext2D;
+    const [log, setLog] = useState(new Log(drawing));
     
-    const selectMode = useMemo(() => new SelectMode(drawing, ctx, new Selection()), [drawing, ctx]); // XX should have drawing
-    const rectangleMode = useMemo(() => new CreateMode(drawing, ctx, (p1,p2) => new Rectangle(p1,p2)), [drawing, ctx]);
-    const circleMode = useMemo(() => new CreateMode(drawing, ctx, circleCreate), [drawing, ctx]);
+    const selectMode = useMemo(() => new SelectMode(drawing, ctx, new Selection(), log), [drawing, ctx, log]); // XX should have drawing
+    const rectangleMode = useMemo(() => new CreateMode(drawing, ctx, (p1,p2) => new Rectangle(p1,p2), log), [drawing, ctx, log]);
+    const circleMode = useMemo(() => new CreateMode(drawing, ctx, circleCreate, log), [drawing, ctx, log]);
     
     const [mode, setMode] = useState<Mode>(selectMode);
     
-    
+    useEffect(() => {
+        const sock = io("http://localhost:" + PORT, {
+            port : PORT,
+        })
+        setLog(new ProxyLog(drawing, sock));
+    }, [drawing]);
+
     useEffect(() => {
         if (canvas === null) return;
         const mouseDown = (e : MouseEvent) : void => {

@@ -1,7 +1,7 @@
-import { EuclideanVector2D } from "./EuclideanVector";
-import { Point } from "./Point";
-import { Shape, ShapeJSON } from "./Shape";
-import { Vector2D } from "./Vector";
+import { EuclideanVector2D } from "./EuclideanVector.js";
+import { Point } from "./Point.js";
+import { Shape, ShapeJSON } from "./Shape.js";
+import { Vector2D } from "./Vector.js";
 
 export interface GroupJSON extends ShapeJSON {
     elements : ShapeJSON[];

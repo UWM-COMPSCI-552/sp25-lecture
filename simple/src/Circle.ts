@@ -1,6 +1,6 @@
-import { EuclideanVector2D } from "./EuclideanVector";
-import { Point } from "./Point";
-import { Shape, ShapeJSON } from "./Shape";
+import { EuclideanVector2D } from "./EuclideanVector.js";
+import { Point } from "./Point.js";
+import { Shape, ShapeJSON } from "./Shape.js";
 
 export interface CircleJSON extends ShapeJSON {
     radius : number;

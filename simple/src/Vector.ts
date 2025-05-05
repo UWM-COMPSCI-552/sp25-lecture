@@ -1,5 +1,5 @@
-import { EuclideanVector2D } from "./EuclideanVector";
-import { Point } from "./Point";
+import { EuclideanVector2D } from "./EuclideanVector.js";
+import { Point } from "./Point.js";
 
 export interface Vector2D {
     dx : number;

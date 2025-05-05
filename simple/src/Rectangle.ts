@@ -1,5 +1,5 @@
-import { Point } from "./Point";
-import { Shape, ShapeJSON } from "./Shape";
+import { Point } from "./Point.js";
+import { Shape, ShapeJSON } from "./Shape.js";
 
 export interface RectangleJSON extends ShapeJSON {
     width : number;
