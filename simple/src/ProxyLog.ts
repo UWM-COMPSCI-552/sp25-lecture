@@ -22,9 +22,12 @@ export class ProxyLog extends Log {
         });
         sock.on('change', (rawcom, _user) => {
             // XXX: Don't call super.add(com)  Why not?  Because super.add calls "log"
+            console.log("got a change", rawcom);
             const com = commandFromJSON(rawcom);
             com.apply(this.drawing); 
             super.log(com);
+            console.log("done with change", com);
+            drawing.notifyObservers();
         });
     }
 

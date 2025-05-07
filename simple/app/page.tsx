@@ -284,6 +284,7 @@ export default function Page() {
     useEffect(() => {
         const repaint = () => {
             if (canvas === null) return;
+            console.log("repaint");
             ctx.strokeStyle = 'black';
             ctx.clearRect(0,0,canvasWidth,canvasHeight);
             for (const s of drawing) {
