@@ -1,6 +1,6 @@
 import { Point } from './Point.js';
 import { Vector2D }from './Vector.js';
-import { Shape } from "./Shape.js";
+import { Shape, ShapeJSON } from "./Shape.js";
 import { Drawing } from "./Drawing.js";
 
 /**
@@ -26,20 +26,22 @@ export interface Command {
  * and is not in the drawing already
  */
 export class AddShapeCommand implements Command {
-    private readonly shape : Shape;
+    private readonly shape : ShapeJSON;
 
     constructor(shape : Shape) {
-        this.shape = shape;
+        this.shape = shape.toJSON();
     }
 
     apply(container : Drawing) {
-        if (container.contains(this.shape)) throw new Error("cannot add again");
-        container.add(this.shape);
+        const shape = Shape.fromJSON(this.shape)
+        if (container.contains(shape)) throw new Error("cannot add again");
+        container.add(shape);
     }
 
     undo(container : Drawing) {
-        if (!container.contains(this.shape)) throw new Error("cannot remove if not present");
-        container.remove(this.shape);
+        const shape = Shape.fromJSON(this.shape)
+        if (!container.contains(shape)) throw new Error("cannot remove if not present");
+        container.remove(shape);
  
     }
 }

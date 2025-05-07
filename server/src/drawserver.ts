@@ -26,11 +26,13 @@ export function createDrawServer(webserver : http.Server) : {
 
     new Rectangle({x:0,y:0}, 100, 200);
     new Circle({x:0,y:0}, 100);
+    new Group();
 
     server.on("connect", (socket) => {
         const userID = nanoid();
         socket.emit("identify", userID);
         for (const cmd of log) {
+            console.log("new client gets command", cmd);
             socket.emit("change", cmd, '');
         };
         socket.on("request", (json:RawCommand) => {
